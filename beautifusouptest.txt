@@ -1,2 +1,0 @@
-beautifusouptest
-from bs4 import BeautifulSoupimport urllib.requesturl = "http://www.douban.com/tag/%E5%B0%8F%E8%AF%B4/?focus=book"res = urllib.request.urlopen(url)soup = BeautifulSoup(res,'lxml')book_div = soup.find(attrs={'id':"book"})book_a = book_div.findAll(attrs={"class":'desc'})for book in book_a :    print(book.string)

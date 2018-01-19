@@ -1,4 +1,0 @@
-冒泡法
-　　
-<?php$arr = array(1,2,4,5,3);function bubble($arr){	$total = count($arr);	for($i=0;$i<$total-1;$i++)	{		echo $i;		echo "&nbsp;";		//for($j=$total-1;$j>$i;$j--)		for($j=0;$j<$total-1-$i;$j++)		{			echo $j;			if($arr[$j]>$arr[$j+1])			{ 				$temp = $arr[$j];				$arr[$j] = $arr[$j+1];				$arr[$j+1] = $temp;			} 		}		echo "<br>"; 	}	return $arr;}
-$arr = bubble($arr);echo "<pre>";print_r($arr);echo "</pre>";?>

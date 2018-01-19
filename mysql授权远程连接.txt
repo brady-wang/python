@@ -1,8 +1,0 @@
-mysql授权远程连接
- 查一下你的MYSQL用户表里, 是否允许远程连接
- 1、授权
-mysql>grant all privileges on *.*  to  'root'@'%'  identified by 'youpassword'  with grant option;
-mysql>flush privileges;
-2、修改/etc/mysql/my.conf
-找到bind-address = 127.0.0.1这一行
-改为bind-address = 0.0.0.0即可

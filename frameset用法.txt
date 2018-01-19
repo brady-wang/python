@@ -1,9 +1,0 @@
-frameset用法
-<html>
-<frameset rows="15%,*" border="1" frameborder="1" scrolling=no>  <frame name="header" src="header.html" scrolling=no noresize  />  <frameset cols="20%,*">		<frame name="left"  src = "left.html" scrolling=no noresize  />		<frame name="right" src = "right.html" scrolling=no  noresize  />  </frameset></frameset>
-</html>
- 
-framespacing="0" 表示框架与框架间保留的空白的距离 frameborder -- 设定框架的边框,取值为(1|0),缺省值为1 1 -- 在每个页面之间都显示边框 0 -- 不显示边框 border="0" 设定框架的边框厚度，以 pixels 为单位。border="0"
- 
- scrolling=no 不显示滚动条
-noresize 不可改变大小

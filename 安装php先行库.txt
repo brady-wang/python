@@ -1,9 +1,0 @@
-安装php先行库
-libmcrypt libconv mhash  ./configure --prefix=/usr/local
-mcrypt 安装完成后在当前目录还要 /sbin/ldconfig
-./configure --enable-ltdl-install
-安装完成mhas
-ln -s /usr/local/lib/libmcrypt.la /usr/lib/libmcrypt
-安装mcryp 要先识别libmcryp 
- 
-ftp://mcrypt.hellug.gr/pub/crypto/mcrypt/libmcrypt/libmcrypt-2.5.3.tar.gz

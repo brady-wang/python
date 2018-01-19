@@ -1,3 +1,0 @@
-sql中详解round(),floor(),ceiling()函数的用法和区别？
- 
-round() 遵循四舍五入把原值转化为指定小数位数，如：round(1.45,0) = 1;round(1.55,0)=2floor()向下舍入为指定小数位数 如：floor(1.45,0)= 1;floor(1.55,0) = 1ceiling()向上舍入为指定小数位数 如：ceiling(1.45,0) = 2;ceiling(1.55,0)=2

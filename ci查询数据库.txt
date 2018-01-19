@@ -1,3 +1,0 @@
-ci查询数据库
-public function getUsers()		{	    	$this->load->database();//载入数据库	    	$users = $this->db->get("user")->result(); //get得到是个query资源。 结果是个数组，数组里面是对象 	    	foreach($users as $v)	    	{	    		echo $v->id."==".$v->username."<br />";	    	} 
-		}

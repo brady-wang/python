@@ -1,3 +1,0 @@
-vagrant 启动错误
-Stderr: VBoxManage.EXE: error: Failed to create the VirtualBox object!VBoxManage.EXE: error: Code E_NOINTERFACE (0x80004002) - No such interface supported (extended info not available
-在VirtualBox安装目录中找到VBoxManage.exe，右击选择属性，设置Windows Server 2008兼容模式运行。再执行vagrant up，正常运行，就可以继续走下去了 

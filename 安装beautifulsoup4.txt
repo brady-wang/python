@@ -1,2 +1,0 @@
-安装beautifulsoup4
-python scripts下 pip install beautifulsoup4

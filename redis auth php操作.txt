@@ -1,2 +1,0 @@
-redis auth php操作
-<?php//Connecting to Redis server on localhost$redis = new Redis();$redis->connect('192.168.33.10', 6379);$redis->auth('test');echo $name = $redis->set("name","sdfs");echo $name = $redis->get("name");?>

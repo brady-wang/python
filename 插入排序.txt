@@ -1,2 +1,0 @@
-插入排序
-function insertSort($arr) {    $len=count($arr);    for($i = 1 ;$i<$len;$i++) {        $temp = $arr[$i];// $tmp = 3;  2        for($j = $i - 1;$j >=0; $j-- ) {  //1 0  3 88 2 5 4 3 66 0            if($temp < $arr[$j]){ // 3 < 88  2<88                $arr[$j+1] = $arr[$j];  //把当前的值放到后面一个上面，                $arr[$j] = $temp; //把插入的值插入给当前位置            }        }        echo "<hr>";        echo "<pre>";        print_r($arr);        echo "</pre>";    }    return $arr;}$arr = array(3,4, 5, 544, 4, 22, 66, 0);$res = insertSort($arr);print_r($res);

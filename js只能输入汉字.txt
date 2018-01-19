@@ -1,2 +1,0 @@
-js只能输入汉字
-var reg = new RegExp("[\\u4E00-\\u9FFF]+","g");　　if(reg.test(val)){            alert("不能输入汉字！");  

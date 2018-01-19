@@ -1,3 +1,0 @@
-nginx 设置默认虚拟 host
-nginx 设置默认虚拟 host
-listren 80 default_server

@@ -1,2 +1,0 @@
-获取所有选中框的ids值
-var os = $("input[name='rec_ids[]']:checked");				var ids = [];				os.each(function(i){					ids.push(os.eq(i).val());				});				var datas = {data:{ids:ids.toString(),order_id:order_id,type:$("input[name='wl']:checked").val(),wl:wl,sn:sn}};

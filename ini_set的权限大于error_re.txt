@@ -1,4 +1,0 @@
-ini_set的权限大于error_reporting
-在用php做网站开发的时候 ， 为防止用户看到错误信息，而出现的不友好界面。故一般性会在php.ini里设置：display_errors = Off;不过在开发的时候，我们有时候需要打开错误信息。这时候，可以在php文件里设置：1.    ini_set("display_errors","On");2.    error_reporting(E_ALL);不过有时候我们及时这样设置了  还是无法显示php里的语法错误。这是由于php文件的语法错误导致该文件根本没有被执行，所以当然不会显示错误信息解决方法：假设这个php里有语法错误你可以新建一个test.php然后在该php里如下编辑：ini_set("display_errors","On");error_reporting(E_ALL);include("目标文件");这样，当你在运行test.php的时候  程序就会报其中的错误语法.
-error_reporting(“E_ALL”)和ini_set(“display_errors”, “on”)的区别?
-后者的权限大于前者，后者是OFF的话，前者就算是E-ALL也没用。

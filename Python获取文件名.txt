@@ -1,6 +1,0 @@
-Python获取文件名
-本文实例讲述了python实现从URL地址提取文件名的方法。分享给大家供大家参考。具体分析如下：
-如：地址为 http://www.jb51.net/images/logo.gif 要想从该地址提取logo.gif，只需要一句代码就可以搞定
-import osurl = 'http://www.jb51.net/images/logo.gif'filename = os.path.basename(url)print(filename)
-输出为：
-logo.gif

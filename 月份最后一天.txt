@@ -1,9 +1,0 @@
-月份最后一天
-
-$date = date('Y-m-d H:i:s'); //当前时间
-
-        echo $firstday = date('Y-m-01', strtotime($date));
-        echo $lastday = date('Y-m-d', strtotime("$firstday +1 month -1 day"));
-
-
-　　

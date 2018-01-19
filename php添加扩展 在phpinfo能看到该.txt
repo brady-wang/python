@@ -1,2 +1,0 @@
-php添加扩展 在phpinfo能看到该扩展，但在cli用php -m 却看不到，为什么呢，求指教
-1. 没有出现的原因是：执行时添加上php.ini的文件就可以了    $ /usr/local/php/bin/php -c /usr/local/php/etc/php.ini -m | grep cb   //cb是模块名 2. $ /usr/local/php/bin/php --ini  | grep Configuration    把php.ini文件复制一份到这个目录下就可以了

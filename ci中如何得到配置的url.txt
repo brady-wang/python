@@ -1,9 +1,0 @@
-ci中如何得到配置的url
-
-$this->load->helper('url');
-
-然后，你可以用它查询并返回设置在config.php文件中的site和/或base URL：
-
-echo site_url();
-echo base_url();
-

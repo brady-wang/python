@@ -1,2 +1,0 @@
-弱智python小游戏猜数字
-from random import randintnum = randint(0,100)print("Guess what I think:?")bingo = Falsewhile bingo == False:    　　answer = int(input())    　　if answer < num:        　　　　print("too small!")    　　if answer > num:        　　　　print("too big")    　　if answer == num:        　　　　print("bingo")        　　　　bingo = True 

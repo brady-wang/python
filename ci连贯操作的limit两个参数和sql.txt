@@ -1,7 +1,0 @@
-ci连贯操作的limit两个参数和sql是相反的
-ci连贯操作的limit两个参数和sql是相反的
-db->where("name =",'mary')->ge()
-name后面要有个空格否则报错当为一个字段
-->where(array('name'=>'ggg','id >' =>2))
-ci中喜欢用下划线  
-order_by  select  from  limit 

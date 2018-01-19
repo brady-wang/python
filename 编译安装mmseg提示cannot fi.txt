@@ -1,9 +1,0 @@
-编译安装mmseg提示cannot find input file: src/Makefile.in错误
-今天安装中文词检索功能模块 coreseek，其中一个分词模块 mmseg ,编译安装到最后，出现annot find input file: src/Makefile.in
-aclocal   //是一个perl 脚本程序，它的定义是：“aclocal - create aclocal.m4 by scanning configure.ac”libtoolize --force  //运行后有一个错误，不用管它。automake --add-missingautoconfautoheadermake clean
- 
-然后在重新编译
-./configure --prefix=/usr/local/mmseg
-make
-make install
-编译安装成功

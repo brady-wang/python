@@ -1,2 +1,0 @@
-子查询语句
-select a.sm+b.sm+c.sm+d.sm+e.sm+f.sm+g.sm+h.sm+i.sm+j.sm+k.sm+l.sm+m.sm+n.sm+o.sm+p.sm+q.sm+r.sm+s.sm+t.sm+u.sm+v.sm+w.sm+x.sm+y.sm+z.sm+aa.sm+bb.sm+cc.sm+dd.sm+ee.sm+ff.sm  as total from(select IFNULL(sum(amount),0)*100 sm from tb0 where uid = 333 and  type in(10,12)) a ,(select IFNULL(sum(amount),0) sm from tb1 where uid = 1382681670 and  item_type in(10,12)) b,

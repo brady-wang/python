@@ -1,2 +1,0 @@
-union查询
- select id, uid, money, FROM_UNIXTIME(created) as created, type FROM  (  #type=1是  cjw_finance_bonus查出的内容select id, uid,balance as money, '1' as type, created FROM cjw_finance_bonus WHERE uid = 281  union all  #type=12是  cjw_qb_cashuser查出的内容  select id, uid,money, '2' as type, createtime as created FROM cjw_qb_cashuser  WHERE uid = 281   )tmp  ORDER BY created DESC

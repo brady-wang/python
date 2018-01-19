@@ -1,9 +1,0 @@
-xml转成数组，原来这么简单！
-
-function xml2arr($xml){
-    $obj  = simplexml_load_string($xml, 'SimpleXMLElement', LIBXML_NOCDATA);
-    $json = json_encode($obj);
-    $arr  = json_decode($json, true);
-    return $arr;
- }
-

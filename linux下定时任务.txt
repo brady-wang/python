@@ -1,3 +1,0 @@
-linux下定时任务
-*/1 * * * * curl http://mall.scenemy.com/wechat.php/Mass/dinshi
-每分钟访问一个网站
