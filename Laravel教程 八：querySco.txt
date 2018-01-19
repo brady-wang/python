@@ -1,0 +1,86 @@
+Laravel教程 八：queryScope 和 setAttribute
+Laravel教程 八：queryScope 和 setAttribute
+此文章为原创文章,未经同意,禁止转载。
+
+Laravel
+Eloquent
+Database
+
+
+直接就是按照上一节所说的那样，我们来说说queryScope和setAttribute在laravel的用法。
+关于应用场景
+这里我首先是想向大家简单说说这两个知识点得应用场景是什么，我们在开发的时候，总是希望有一种偷懒的方式，所以考虑以下这两个场景：
+
+数据在存入数据库的时候需要进行预先处理，比如考虑一个简单地例子：我们在保存用户的登录密码的时候，都是需要将密码用某种方式加密过后在写入数据库的，我们难道在每一次在提交表单过来之后都对传过来的数据进行一次数据加密么？能不能有一种自动完成对密码入库前就加密的机制呢？这样我们在处理表单的时候就不用关心密码加密的问题了
+想一想我们在向用户展示的数据是不是基本上都是从数据库取的呢？那么往往我们会有很多的查询语句，在这样的情况之下很多的查询语句可以就会重复，但是在写代码这一行中，一旦出现多个重复，基本上就会有优化方式存在，所以这个时候queryScope就派上用场了
+
+setAttributes
+之前，我们都是将published_at设置为文章创建的日期：
+$input['published_at'] = Carbon::now();
+
+然而这并不是我们想要的，我们希望有一种可以控制的方式，比如在表单之中设置文章的发布日期，所以，我们来实现一下：首先将published_at这个字段放到我们的form之中，在create.blade.php中，加入published_at 输入框输入：
+<div class="form-group">
+{!! Form::label('published_at','发布日期') !!}
+{!! Form::input('date','published_at',date('Y-m-d'),['class'=>'form-control']) !!}
+</div>
+
+这一段代码加在textarea后面，这里使用了Form::input()，这个方法，因为Form这个类没有类似Form::date()指定date的方法，所以我们使用Form::input()并指定input的类型为date，并使用date('Y-m-d')来指定默认值为文章发布当天，但是我们可以修改，我们来看看我们的页面现在是什么样的：
+
+这里我们可以看到我们拿到了published_at这个字段了，这个时候，可以修改一下ArticleController中的store()方法的代码了：
+$input = $request->all();
+$input['intro'] = mb_substr($request->get('content'),0,64);
+Article::create($input);
+return redirect('/');
+
+我们删除了$input['published_at'] = Carbon::now();这一行代码，然后尝试创建一篇文章来看看：
+
+OK，到这里，文章可以创建成功了，但是如果我们看看数据库当中的数据：
+
+这里的日期设置成的格式并不是理想的模式，有没有一种方式可以将其设置为跟created_at和updated_at一样的呢？时分秒都可以知道的呢？这个时候就可以使用setAttribute来完成了，在Article.php中添加下面的方法：
+public function setPublishedAtAttribute($date)
+{
+    $this->attributes['published_at'] = Carbon::createFromFormat('Y-m-d',$date);
+}
+
+这里注意这个写法set+字段名+Attribute，还有的就是使用驼峰法。比如你要加密密码的时候可以这样：
+public function setPasswordAttribute($passowrd)
+{
+    $this->attributes['password'] = Hash::make($passowrd);
+    //仅仅是举例
+}
+
+这里我们使用了Carbon这个类，因为我们还想将published_at字段作为Carbon对象来处理，这样后期会有很大的好处。注意在文件头部使用use Carbon\Carbon;来引入Carbon。这个时候我们再来发表一次：
+
+再来看看数据库：
+
+这样一来格式是对了，那么再来为Article.php添加一行代码使published_at作为Carbon对象来处理：
+protected $dates = ['published_at'];
+
+对这样就完成了，关于更多地Carbon好处和使用特性，我们在后面再说。
+queryScope
+上面实现了用published_at实现了文章的发布日期，但是现在的文章展示还是原来的样式，这并不是我们想要的结果，因为我们刚刚设置发表日期为9-12的文章(写文章的时候为9-08)也展示出来了,我们得限制一下。首先我们可以在查询的时候直接实现，比如在ArticleController的index()方法中将查询语句写成这样：
+$articles = Article::where('published_at','<=',Carbon::now())->latest()->get();
+
+我们使用where()直接限制published_at时间小于或等于当前时间的文章才进行显示，看看效果：
+
+发现在未来时间发布的文章确实隐藏了，这样貌似已经达到了目的，为什么还要引入qeuryScope这个用法呢？这是因为考虑到代码的重用性，比如我们要是多个地方使用到Article::where('published_at','<=',Carbon::now())这个条件限制呢，我们有没有一种方式可以将查询语句写成类似下面这种形式呢？
+$articles = Article::latest()->published()->get();
+
+就是直接使用published()这个自定义的方法来代替where('published_at','<=',Carbon::now())呢，这样代码可读性也会更好。
+所以我们就来说说，queryScope的用法了，想想我们之前设置published_at这个字段的目的：
+我们希望可以对文章进行简单地管理，比如我们在写系列文章的时候，有可能一天写了好几篇，但是这种时候其实我们发一篇文章就好了，每天消化一篇文章就很不错了，所以作为作者，我并不想还没到发布日期的文章就展示给用户看，但是，我写了文章也想把它存入数据库，让它在该发布的日期自动显示，这样就好了。于是，我们可以好好利用一下published_at这个字段
+
+在我们的Article.php中增加下面的方法：
+public function scopePublished($query)
+{
+    $query->where('published_at','<=',Carbon::now());
+}
+
+这里注意一下写法scope+自定义的方法名字，还有就是一如既往的驼峰法。比如我们想使用published()这个方法，就定义为scopePublished($query)。这个时候就可以真正的使用上面说的查询了，在ArticleController的index()方法中：
+$articles = Article::latest()->published()->get();
+
+再去看看效果，相信你刷新之后还是一样的。
+总结
+又是最后的结尾了，这里我们简单的介绍了queryScope和setAttribute的用法，下一节打算说说Eloquent的一个重要的内容：Eloquent Relationship。那个时候也就会越来越觉得laravel的强大了。
+最后：Happy Hacking
+

@@ -1,0 +1,50 @@
+shell笔记
+输出重定向 	命令 >  覆盖	命令 >> 追加 
+	错误命令 2>文件	错误命令 2>>文件 	ls >> /root/ls.txt	lst 2>> /root/ls/ls.txt 2和大于号不能有空格  	不管正确错误都保存的格式	命令 >文件 2>&1	命令 >>文件 2>&1 	命令 &>文件	命令 &>>文件  	命令>>文件1 2>>文件2 正确 错误放在不同 	ls &>/dev/null 丢入垃圾箱  输入重定向 wc  选项 文件名  ctrl+d  统计键盘的输入数量 -c 统计字节数-w 统计单词书-l 统计行数
+wc < text.txt
+wc << hello  sdfsldfjs d    hello  统计两个hello之前的 
+ 
+多命令顺序执行；命令1；命令2 多个命令之间没有任何关系
+&& 命令1&&命令2  逻辑与 
+|| 命令1||命令2  逻辑或 
+dd命令比cp厉害   dd if=输入文件 of=输出文件 bs=字节数 count=个数 主要用来进行磁盘复制
+date;dd if=/dev/zero of=/root/testfile bs=1k count=10000;date
+./configure && make && make install 
+管道符  连接两个命令
+命令1的正确输出作为命令2的操作对象 
+netstat -an |grep ESTABLISHEDgrep 选项 搜索内容 搜索文件-i 忽略大小写 -n 输出行号-v反向查找--color=auto 颜色显示grep "root" /etc/passwd 
+通配符？匹配一个任意字符*匹配0个或者多个任意字符[]匹配里面的一个字符 [abc][-][a-z]匹配任意一个小写字母[^0-9]匹配非字符 
+rm -rf * 删除当前目录所有文件
+单引号不解析，双引号解析 反引号引用系统命令  abc=`date` echo $abc  先执行 后赋值abc=$(date)和反引号一样
+\$ 把特殊符号变为普通符号 
+shell变量 ：
+数字字母下划线，不能以数字开头变量的默认类型都是字符串类型，如果要进行数值运算必须指定变量类型为数值型
+变量是用=连接，两侧不能有空格 变量的值有空格 需要用引号包含 
+name=$(date)将命令结果作为变量赋值环境变量建议大写 
+变量分类 用户自定义  环境变量  位置变量 预定义变量 
+变量查看   set 变量删除  unsetname=$(name)33333echo $name name="$name"33333
+ 
+环境变量  ：
+用户自定义变量只在当前shell生效环境变量会在当前shell和子shell当中生效 如果把环境变量写入配置文件，那么这个环境变量在所有的shell中都生效 
+export 变量名=变量值env 查询变量 
+pstree  进程树
+ 
+env age  将已经定义的本地变量什么为环境变量
+PS1='[\u@\h \W]\$ 'PATH PATH=/usr/lib/qt-3.3/bin:/usr/kerberos/sbin:/usr/kerberos/bin:/usr/local/sbin:/usr/local/bin:/sbin:/bin:/usr/sbin:/usr/bin:/root/bin系统查找的路径  文件执行要绝对路径变量累计 PATH=${PATH}:/root临时生效 
+PS1提示符echo $PS1PS1='[\u@\h \w]\$ '
+位置参数变量 $n $0命令本身  $1-9 代表参数 ${10}$* 命令所有的参数  整体对待$@   所有参数，每个参数区分对待$#  所有参数的个数 
+for i in "$*"	do		echo $i 	done
+预定义变量 变量名 变量作用不能改变 
+$?判断上一次命令的返回状态  0正确执行 非0执行不正确 $$当前进程号pid$! 后台的最后一个进程号 find /root -name hello.sh & 放入后台执行 
+接收键盘输入 read  选项 变量名 -p 提示信息 -t秒数  -n 字符数 -s 隐藏输入数据
+echo -e "\n" 输出换行符号
+read -p "input you name " name echo $name 
+数值运算与运算符 + - * /aa=11bb=22cc=$aa+$bb echo $cc  11+22 linux默认是字符串  declare +- 变量名 +取消 -设定-i 设定为整形-x 设定为环境变量-p 查看被设定的类型 
+declare cc=$aa+$bbecho $cc  33
+dd=$(expr $aa + $b )方法三ff=$(($aa+$bb))双小括号 比较常用 
+x=${y-new} 如何y不存在 x=new  如果y为空 x也为空  如果y不为空 x也为y的值 
+x=${y:-new}y为空的时候 x为news
+source 配置文件  生效环境变量环境变量要从新登录后才生效. 配置文件 和source配置文件 
+  环境变量    set   配置文件  /etc/profile  /etc/profiled.d/*.sh  ~/etc/.bash_profile  ~/.bashrc/etc/bashrc其中中间两个只有当前用户生效 其他的所有用户都生效  
+echo $PATHecho "$PATH":/root
+ 

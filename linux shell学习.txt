@@ -1,0 +1,31 @@
+linux shell学习
+echo $SHELL看是用的什么shell
+ 
+/etc/shell 看支持哪些shell 
+sh 从bash 进入sh
+exit 
+csh 和bash一样的提示符
+echo "孙丹菲是否" 将东西输入到屏幕，有空格就要加双引号
+echo -e "sdf\bsdf" \b为退格键
+echo -e "hel\blo"  helo
+\t制表符
+\n换行符
+echo -e \x67\x68  按十六进制输出
+主要是为了写出规整的 
+echo -e "贱人就是矫情" echo中不能加！
+\e[1;31m 贱人\e[0m
+30m 黑色
+31m红色
+32m绿色
+33m黄色
+34m蓝色
+35m洋红
+36m青色
+37m白色
+ 
+#！/bin/bash
+#这个是第一个程序
+echo -e "\e[1;36m 孙丹菲 \e[0m"
+chmod 755 hello.sh
+./hello.sh
+bash hello.sh

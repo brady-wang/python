@@ -1,0 +1,41 @@
+详解 MySQL 的计划任务
+
+
+注意：5.1以后才支持！
+让MYSQL定期执行指定的一条命令。功能类似于crontab。
+1、 检查你的MYSQL是否开了这个功能
+SHOW VARIABLES LIKE 'event_scheduler';
+我执行了一遍发现记录为空说明我的MYSQL没有开呢。OK解决办法
+2、  打开你的MYSQL的计划任务功能
+使用这个功能之前必须确保event_scheduler已开启，可执行
+SET GLOBAL event_scheduler = 1;或SET GLOBAL event_scheduler = ON;来开启，也可以直接在启动命令加上 “–event_scheduler=1”，例如：mysqld ... --event_scheduler=1
+my.ini or my.cnf 中的[mysqld]添加 event_scheduler=ON
+二、创建事件(CREATE EVENT)先来看一下它的语法：
+CREATE EVENT [IF NOT EXISTS] event_name  ON SCHEDULE schedule  [ON COMPLETION [NOT] PRESERVE]  [ENABLE | DISABLE]  [COMMENT 'comment']  DO sql_statement;
+schedule:  AT TIMESTAMP [+ INTERVAL INTERVAL]| EVERY INTERVAL [STARTS TIMESTAMP] [ENDS TIMESTAMP]
+INTERVAL:  quantity {YEAR | QUARTER | MONTH | DAY | HOUR | MINUTE |            WEEK | SECOND | YEAR_MONTH | DAY_HOUR | DAY_MINUTE |            DAY_SECOND | HOUR_MINUTE | HOUR_SECOND | MINUTE_SECOND}
+
+#单次计划任务: AT 时戳 #重复的计划任务 EVERY 时间(单位)的数量 时间单位 [STARTS 时戳][ENDS 时戳] 在两种计划任务中，时戳可以是任意的TIMESTAMP 和DATETIME 数据类型,要求提供的是将来的时间（大于CURRENT_TIMESTAMP），而且小于Unix时间的最后时间（等于或小于'2037-12-31 23:59:59'） 时间单位是关键词：YEAR，MONTH，DAY，HOUR，MINUTE 或者SECOND 3.[ON COMPLETION [NOT] PRESERVE] COMPLETION 当单次计划任务执行完毕后或当重复性的计划任务执行到了ENDS阶段。而声明PRESERVE的作用是使事件在执行完毕后不会被Drop掉 4.[ENABLE|DESABLE] ENABLE  开启事件 DESABLE 关闭事件 5.COMMENT 注释 6.DO sql_statement 执行的sql语句
+1) 首先来看一个简单的例子来演示每秒插入一条记录到数据表
+USE test;CREATE TABLE aaa (timeline TIMESTAMP);CREATE EVENT e_test_insertON SCHEDULE EVERY 1 SECOND DO INSERT INTO test.aaa VALUES (CURRENT_TIMESTAMP);等待3秒钟后，再执行查询看看：
+mysql> SELECT * FROM aaa;+---------------------+ | timeline            | +---------------------+ | 2007-07-18 20:44:26 | | 2007-07-18 20:44:27 | | 2007-07-18 20:44:28 | +---------------------+2) 5天后清空test表：
+CREATE EVENT e_testON SCHEDULE AT CURRENT_TIMESTAMP + INTERVAL 5 DAYDO TRUNCATE TABLE test.aaa;3) 2007年7月20日12点整清空test表：
+CREATE EVENT e_testON SCHEDULE AT TIMESTAMP '2007-07-20 12:00:00'DO TRUNCATE TABLE test.aaa;4) 每天定时清空test表：
+CREATE EVENT e_testON SCHEDULE EVERY 1 DAYDO TRUNCATE TABLE test.aaa;5) 5天后开启每天定时清空test表：
+CREATE EVENT e_testON SCHEDULE EVERY 1 DAYSTARTS CURRENT_TIMESTAMP + INTERVAL 5 DAYDO TRUNCATE TABLE test.aaa;6) 每天定时清空test表，5天后停止执行：
+CREATE EVENT e_testON SCHEDULE EVERY 1 DAYENDS CURRENT_TIMESTAMP + INTERVAL 5 DAYDO TRUNCATE TABLE test.aaa;7) 5天后开启每天定时清空test表，一个月后停止执行：
+CREATE EVENT e_testON SCHEDULE EVERY 1 DAYSTARTS CURRENT_TIMESTAMP + INTERVAL 5 DAYENDS CURRENT_TIMESTAMP + INTERVAL 1 MONTHDO TRUNCATE TABLE test.aaa;[ON COMPLETION [NOT] PRESERVE]可以设置这个事件是执行一次还是持久执行，默认为NOT PRESERVE。8) 每天定时清空test表(只执行一次，任务完成后就终止该事件)：
+CREATE EVENT e_testON SCHEDULE EVERY 1 DAYON COMPLETION NOT PRESERVEDO TRUNCATE TABLE test.aaa;[ENABLE | DISABLE]可是设置该事件创建后状态是否开启或关闭，默认为ENABLE。[COMMENT ‘comment’]可以给该事件加上注释。
+三、修改事件(ALTER EVENT)ALTER EVENT event_name  [ON SCHEDULE schedule]  [RENAME TO new_event_name]  [ON COMPLETION [NOT] PRESERVE]  [COMMENT 'comment']  [ENABLE | DISABLE]  [DO sql_statement]1) 临时关闭事件
+ALTER EVENT e_test DISABLE;2) 开启事件
+ALTER EVENT e_test ENABLE;3) 将每天清空test表改为5天清空一次：
+ALTER EVENT e_testON SCHEDULE EVERY 5 DAY;四、删除事件(DROP EVENT)语 法很简单，如下所示：
+DROP EVENT [IF EXISTS] event_name例如删除前面创建的e_test事件
+DROP EVENT e_test;当然前提是这个事件存在，否则会产生ERROR 1513 (HY000): Unknown event错误，因此最好加上IF EXISTS
+DROP EVENT IF EXISTS e_test;
+ create event testON SCHEDULE AT '2007-09-01 12:00:00' + INTERVAL 1 DAYon completion not preserve do insert into yyy values('hhh','uuu');
+解释：从2007-09-01开始，每天对表yyy在12：00：00进行一个插入操作。而且只执行一次（on completion not preserve ）
+我的计划任务为：
+create event sysplanON SCHEDULE AT '2010-05-22 23:00:00' + INTERVAL 1 DAYon completion not preserve do truncate table bjproj.ae_tmp;
+三、通过设定全局变量event_scheduler 的值即可动态的控制事件调度器是否启用。  查看是否event_scheduler开启 mysql> SHOW VARIABLES LIKE '%event%'; 设置开启 mysql> SET GLOBAL event_scheduler=ON; 四、例子: 每分钟插入一条日志: DELIMITER // CREATE EVENT `user_log_event` ON SCHEDULE EVERY 1 MINUTE STARTS '2010-12-27 00:00:00'  ON COMPLETION NOT PRESERVE ENABLE DO  BEGIN  INSERT INTO log SET addtime=NOW(); END // 调用存储过程: DELIMITER // CREATE EVENT `user_log_event` ON SCHEDULE EVERY 1 DAY STARTS '2010-00-00 00:00:00'  ON COMPLETION NOT PRESERVE ENABLE DO  BEGIN         CALL user_log_prov(); END // 转http://blog.chinaunix.net/u2/84280/article_100139.html
+

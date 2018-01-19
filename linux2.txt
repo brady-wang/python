@@ -1,0 +1,63 @@
+linux2
+c语言开发，gcc hello.cgcc -o my.class hello.c	./a.outjavac Hello.javajava Hello
+添加用户：useradd xiaoming设置密码：passwd xiaoming删除用户：userdel xiaoming 删除用户userdel -r xiaoming 删除用户以及用户主目录
+修改 root 密码进入单用户模式，passwd root 即可
+init[0123456]
+0:关机1：单用户2：多用户状态，没有网络服务3.多用户状态，有网络服务4 系统未使用保留给用户5 图形界面6 系统重启
+/etc/inittab de id：5initdefault
+解决修改错误配置的方法在引导程序的时候，按e 进入 kernel 输入e在后面加 1 单用户模式 
+mkdir 建立目录rmdir 删除目录
+touch 建立空文件cp 赋值命令cp -r dir1 dir 2 递归赋值mv 移动文件rm删除文件和目录rm -rf * 删除所有内容，包括目录和文件ln 建立符号链接ln -a 源 目标more 显示文件内容带分页lessgrep 在文本中查询内容pageup 上一页ls -al /etc/|more 管道命令将上一个命令的结果交给 |后面的命令处理
+搜索 aaa.txt中是否有wang这个关键词grep -n "wang" aaa.txt
+man 相当于dos下面的help
+find 搜到文件及目录find / -name aaa.java 查找是否有aaa.java这个文件从根目录查找
+重定向命令ls -l > a.txt 列表的内容写入到a.txt 中ls -al >> aa.txt 追加到结尾
+修改ip ifconfig eth0 或者virbr0 192.168.11111看进程 topnetstat -anp |more
+追踪路由 tracert 目标ip/域名测试两个ip是否畅通ping 目标ip
+ipconfigifconfig
+查看是否已经有ssh\rpm -qa |grep ssh
+service ssd start
+/etc/init.d/sshd startvi /etc/ssh/sshd.config
+ip a b c d e 五种类型 类似门牌号
+计算机-网关-internnet
+a 类 0 七位网络号 主机号 1.0。0.0 - 127.255.255.255b类  10 14位网络号 主机号 128.0.0.0 - 191.255.255.255c类 110 21位网络号  主机号 192.0.0.0 - 223.255.255.2551110 多点播送地址 224.0.0.0-239.255.255.2551110 留作将来使用
+公网ip 可以直接访问的
+私网ip  不能直接访问 内部ip 192.168.1.1
+ping www.baidu.com 可以看到百度的ip
+追踪路由命令：包到达目的，经过多少个公网网关
+ 
+tracert www.baidu.com
+netsend "" 192.168.255.255
+ping 127,xx.xx.xx 可以ping自己的网络
+子网  比如清华 下面的计算机系
+只要网络号一样，那么就是同一个子网 子网通过路由器连接
+配置ip三种方法root用户登录  运行setup命令，进入到text mode set utility对网络进行配置 然后 /etc/rc.d/init.d/network -restart 才生效
+rpm -qa   query all查询安装了哪些rpm包
+rpm -q mysql
+zombie僵尸进程数load average 负载均衡，平均数超过0.6就 资源紧张了
+4min启动了几分钟了
+swap虚拟内存
+top -d 10指定系统10秒刷新一次
+输入小u,监控root用户q退出
+设置系统时间
+date mmddhhmmccyy.ss yueyue 日日 试试分分年年年年.秒秒
+查看月历cal 3 2002 cal 2003 > test 写到test中
+显示网络统计信息的命令netstat -an 
+netstat -anp 进程也显示
+ 建立系统用户 不会建立文件夹目录useradd -r wang
+ 
+linux分区：树状分区 /根分区root src tmp/dev/sda 第一块st/ide硬盘
+挂载点：操作系统/下的目录
+linux划分区，至少两个：1，swap分区  交换分区，内存不够的时候用的 一般内存的一到两倍，如果内存大于1G，使用和内存相等大小2，/根分区3，/boot 启动分区 100M
+安装定制软件： x窗口系统  编辑器 emacs vi图形化互联网文本互联网服务器配置工具万维网服务器 apachewindows文件服务器  sambaftp服务器sql数据库
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 
+ 

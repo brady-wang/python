@@ -1,0 +1,37 @@
+深度分析mysql GROUP BY 与 ORDER BY
+
+
+鉴于项目的需要，就从网上找到该文章，文章分析得很详细也很易懂，在android里，（不知道是不是现在水平的限制，总之我还没找到在用ContentProvider时可以使用子查询），主要方法是用SQLiteDatabase 的 rawQuery，直接运行sql语句就可以了。
+
+ 
+
+本文就和大家一起深入研究下mysql中group by与order by.下面是我模拟我的内容表
+ 
+我现在需要取出每个分类中最新的内容
+select * from test group by category_id order by `date`
+结果如下
+ 
+明显。这不是我想要的数据，原因是msyql已经的执行顺序是
+引用
+写的顺序：select ... from... where.... group by... having... order by.. 执行顺序：from... where...group by... having.... select ... order by...
+所以在order by拿到的结果里已经是分组的完的最后结果。 由from到where的结果如下的内容。
+ 
+到group by时就得到了根据category_id分出来的多个小组
+  到了select的时候，只从上面的每个组里取第一条信息结果会如下
+ 
+即使order by也只是从上面的结果里进行排序。并不是每个分类的最新信息。 回到我的目的上 －－分类中最新的信息 根据上面的分析，group by到select时只取到分组里的第一条信息。有两个解决方法
+1，where+group by（对小组进行排序） 2，从form返回的数据下手脚（即用子查询） 由where+group by的解决方法 对group by里的小组进行排序的函数我只查到group_concat()可以进行排序，但group_concat的作用是将小组里的字段里的值进行串联起来。
+select group_concat(id order by `date` desc) from `test` group by category_id
+ 
+再改进一下
+select * from `test` where id in(select SUBSTRING_INDEX(group_concat(id order by `date` desc),',',1) from `test` group by category_id ) order by `date` desc
+ 子查询解决方案
+select * from (select * from `test` order by `date` desc) `temp`  group by category_id order by `date` desc
+
+自己例子
+ 
+复制代码 代码如下:
+SELECT * FROM (SELECT * FROM `ecm_copy_goods_change` ORDER BY `cid` DESC) `ecm_copy_goods_change` GROUP BY goods_id ORDER BY `cid` DESC
+ 
+
+

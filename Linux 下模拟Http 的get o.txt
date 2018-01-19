@@ -1,0 +1,8 @@
+Linux 下模拟Http 的get or post请求(curl和wget两种方法)
+一、get请求：
+1、使用curl命令：
+curl "http://www.baidu.com"  如果这里的URL指向的是一个文件或者一幅图都可以直接下载到本地curl -i "http://www.baidu.com"  显示全部信息curl -l "http://www.baidu.com" 只显示头部信息curl -v "http://www.baidu.com" 显示get请求全过程解析2、使用wget命令：wget "http://www.baidu.com"也可以二、post请求1、使用curl命令(通过-d参数，把访问参数放在里面)：
+curl -d "param1=value1&param2=value2" "http://www.baidu.com"
+2、使用wget命令：（--post-data参数来实现）
+wget --post-data 'user=foo&password=bar'  http://server.com/auth.php
+ 

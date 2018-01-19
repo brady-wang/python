@@ -1,0 +1,96 @@
+linux
+shell命令解释器分为交互式和非交互式
+一问一答 模式  交互式
+cat -n /etc/shells
+一共五个/bin/sh steven bourn开发的/bin/bash/sbin/nologin/bin/tcsh/bincsh
+linux使用的版本称为 Bourne Again shell 简称bash
+type [-ta] name 显示命令是否为别名
+file 表示外部命令alias 别名】builtin  bash内置命令
+a 列出所有含有name的命令
+echo $PATH输出路径
+env显示目前系统中主要的预定义变量内容set可以将环境变量和用户自定义变量显示出来
+service sshd start
+PS1 改变当前显示的用户，主机，时间那些 
+ 
+eject 弹出光驱
+rpm -ivh 安装rpm包
+ 
+引导系统 /etc/grub/conf
+grub 计算机启动时候执行的软件，告诉启动哪个操作系统
+etc目录配置文件目录，大多数软件和服务在这个目录下都有一个副本
+ls grub.conf
+default : 表示计算机启动时，进入第几个操作系统
+timeout 等待时间hiddemenu 隐藏菜单
+ 
+选择登陆界面： 图形界面，字符界面/etc/inittab运行级别：计算机操作系统本身的状态0-计算机关机状态1-单用户模式2-多用户模式，没有nfs系统，网络服务3-字符界面模式4-未定义5-图形界面6-重启状态
+挂载文件系统：/etc/fstab  分为六列  第一列  设备  第二例 挂载点
+第三列 挂载类型第四列 挂载参数第五列 备份第六列  自检mout /media/cdrom mout 设备 挂载点
+破解密码前提安装系统时候，引到口令无
+进入开机界面，e  进行编辑， 到第二个 
+删掉 rhgb quiet 保留空格 输入 single  或者不去除，直接后面加1即可
+passwd root 
+设置grub命令 
+vi /etc/grub.conf
+vi /boot/grub/grub.conftimeout 下面password --md5 md5密码 设置grub目录，破戒不了密码
+grub-md5-crypttitle下面 passwd --md5 进入系统必须设置
+grub密码 grub
+进入操作系统使用密码】 qidong
+root密码
+学习时候尽量使用root用户工作时候尽量使用普通用户
+group 组名 groupmod 组名groupdel 组名 注意：如果当前组内存在用户，不能删除用户
+useradd [-参数] 用户名-g指定组  如果没有指定，自动创建一个以用户名命名的组-d home  添加用户的同时指定用户的家
+cat /etc/passwd可以看到所有用户信息cat /etc/group 查看组信息
+usermod修改用户-c  comment 修改用户注释信息-l loginname  修改用户名-d homedir 修改用户的家-g 修改用户的所属租
+userdel [-]用户名-r删除用户同时删除用户目录
+chown -R 修改权限
+创建用户后 默认不允许登陆，必须要有密码passwd 用户名
+如何静止普通用户登陆1.禁止某个人2 禁止所有人
+/etc/shadow 用户密码保存文件找到这个人，在前面加上！
+/etc/创建一个nologin的文件即可禁止所有目录
+设置用户口令：passwd [] 用户  设置用户密码-S查看当前密码状态-l 锁定用户 不能登录-u 解锁-d  删除密码 登录不用输入密码了
+gpasswd[] 组名 、添加删除组成员 （附属组）
+-a 添加-d 删除
+su user切换用户 su  切换root
+newgrp切换组whoami 当前用户
+普通用户之间切换需要密码root用户切换至普通用户u需要密码普通用户切换到root用户需要密码退出 exit
+当一个用户登录到系统，默认当前组为主组，创建的文件也属于这个组，
+显示用户详细信息 、id  产考用户组信息 包括用户组groups查看某个用户所属租
+chfn 用户名称 设置用户资料wang::500:500:wangyongshun,shenzheng,12222222,44354353:/home/wang:/bin/bash
+finger 用户名称 显示用户资料
+批量添加用户;
+编辑用户文件 必须和/etc/passwd文件的格式相同编辑密码文件 格式  用户名：密码newusers 表示从一个文件中读取用户信息并写入到/etc/passwd 中pwunconv 表示从/etc/shadow 文件中 的密码写回到/etc/passwd中chpasswd 将某个密码文件中的密码写入到/etc/passwd中pwconv 表示将/etc/passwd里的密码写入到/etc/shadow中
+操作 group1 group2 503 504 
+user1:x:700:503::/home/user1:/bin/bash用户名 密码 用户号 组号  注释 用户目录 bash
+user1:x:701:503::/home/user1:/bin/bashuser1:x:702:503::/home/user2:/bin/bashuser1:x:703:504::/home/user3:/bin/bash
+创建密码文件 pass.txtuser1:111user1:222user3:333
+newusers user.txt cat /etc/passwduser1:x:701:503::/home/user1:/bin/bashuser2:x:702:503::/home/user2:/bin/bashuser3:x:703:504::/home/user3:/bin/bash
+pwunconv 回车 /etc/passwd  密码出现了
+chpasswd < passwd.txt
+pwconv 
+结束 
+>>赋予普通用户特殊权限
+sudu 某指令 以超级用户权限执行某些命令  需要分配后 sudo /sbin/shutdown -h nowvisudo 不用参数直接可打开 # %users  localhost=/sbin/shutdown -h nowwang  localhost=/sbin/shutdownwang  localhost=/usr/sbin/useradd
+wang  localhost=/sbin/shutdown -h now普通用户执行bin  超级用户执行sbin
+查询命令位置 where is shutdown
+/etc/sudoer 普通用户执行特殊权限由这个 
+sudo -l 查看可执行的权限
+ 
+》》
+r  可读 4
+w 可写 2
+x 可执行 1
+-rw-------. 1 root root   982 Sep 21 07:41 anaconda-ks.cfg-rw-r--r--. 1 root root     0 Sep 27 12:54 a.txt-rw-r--r--. 1 root root     0 Sep 27 12:54 b.txtdrwxr-xr-x. 2 root root  4096 Sep 26 19:17 Desktopdrwxr-xr-x. 2 root root  4096 Sep 26 19:14 Documentsdrwxr-xr-x. 2 root root  4096 Sep 26 19:14 Downloadsdrwxr-xr-x. 2 root root  4096 Sep 26 19:14 Music-rw-r--r--. 1 root root    39 Sep 27 12:22 pass.tx
+第一列 文件权限 第一个字符-  rwx  rwx  rwx  第一个 "-"普通文件 "l"表示链接文件"d"为文件夹[root@localhost ~]# ls -l /etc/grub.conf lrwxrwxrwx. 1 root root 22 Sep 21 07:41 /etc/grub.conf -> ../boot/grub/grub.conf
+第一个文件拥有者对文件的权限 第二个组内用户对文件的权限第三个 所有用户对文件的权限
+第二列 节点数第三列 表示文件拥有者第四列 表示文件所属组第五列表示文件大小第六列 文件创建时间第七列 文件名
+网络配置 rpm 系统自带的软件 二进制软件包  
+/etc/sysconfig/network-scripts/ifcfg-eth0 这个文件属于计算机第一块网卡的配置文件
+DEVICE=eth0 对第一块网卡进行配置
+ONBOOT 系统启动时候是否自动启用网卡
+BOOTPROTO=static 获取ip地址
+IPADDR= ip地址NETMASK 子网掩码GATEWAY  网关TYPE = Ethernet 设备类型，加不加都可
+BOOTroot@localhost ~]# vi /etc/sysconfig/network-scripts/ifcfg-eth0 DEVICE=eth0BOOTPROTO=staticIPADDR=192.168.5.88NETMASK=255.255.255.0GATEWAY=192.168.0.1ONBOOT=yes~HWADDR= mac地址 封网卡
+重启网卡service network stop|start|restart|status 管理所有网络设备
+ifup 启动网卡 其中一块 只能
+ifdown 关闭网卡 ifdown eth0
+ 

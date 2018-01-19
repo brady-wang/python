@@ -1,0 +1,278 @@
+linux环境下安装sphinx中文支持分词搜索(coreseek+mmseg)
+ linux环境下安装sphinx中文支持分词搜索(coreseek+mmseg) 2013-11-10 16:51:14
+
+
+分类： 系统运维
+ 
+
+
+
+为什么要写这篇文章？
+  答：通过常规的三大步（./configure,make,make install）的编译安装mmseg时，总是出现找不到src/Makefile.in文件的错误（config.status: error: cannot find input file: src/Makefile.in）。即便是依照官方教程所说的先安装好依赖软件（yum -y install glibc-common libtool autoconf automake mysql-devel expat-devel，如果是用编译安装的方法安装的Mysql就不用装mysql-devel，在编译csf时指定Mysql的安装目录即可）也无法解决问题。
+ 
+官方安装说明：（原文）============================================================依赖环境安装：Debina等使用deb系统：aptitude -y install yum glibc-common build-essential libtool autoconf automake libexpat-dev  mysql-client （如果是用编译安装的方法安装的Mysql就不用装mysql-client ，在编译csf时指定Mysql的安装目录即可）Centos等使用yum系统：yum -y install glibc-common libtool autoconf automake expat-devel  mysql-devel （如果是用编译安装的方法安装的Mysql就不用装mysql-devel，在编译csf时指定Mysql的安装目录即可）BSD系统：pkg_add -r libtool autoconf automake mysql5-client iconv安装升级autoconfcoreseek需要autoconf 2.64以上版本，因此需要升级autoconf，不然会报错从http://download.chinaunix.net/download.php?id=29328&ResourceID=648下载autoconf-2.64.tar.bz2，安装方法如下：
+
+tar -jxvf autoconf-2.64.tar.bz2
+
+cd autoconf-2.64
+
+./configure
+
+make
+
+make instal
+
+coresek source下载http://www.coreseek.cn/uploads/csft/3.2/coreseek-3.2.14.tar.gzmmseg安装：
+
+tar xzvf coreseek-3.2.14.tar.gz
+cd coreseek-3.2.14
+ls
+csft-3.2.14 mmseg-3.2.14 README.txt testpack
+cd mmseg-3.2.14
+aclocal
+libtoolize --force
+automake --add-missing
+autoconf
+autoheader
+make clean #此时如有错误可忽略不管
+./configure --prefix=/usr/local/mmseg3
+make
+make install
+
+
+cp -f src/*/*.h /usr/local/mmseg3/include/mmseg/
+一定要执行以上的拷贝，否则coreseek在make编译时会出错。coreseek安装：
+
+cd ..
+cd csft-3.2.14
+bash buildconf.sh
+aclocal
+libtoolize --force
+automake --add-missing
+autoconf
+autoheader
+perl -pi -e 's/lpthread/lpthread -liconv/g' src/Makefile*
+make clean #此时如有错误可忽略不管
+./configure --prefix=/usr/local/coreseek --enable-id64 --without-python --with-mysql=/usr/local/mysql --with-mmseg --with-mmseg-includes=/usr/local/mmseg3/include/mmseg/ --with-mmseg-libs=/usr/local/mmseg3/lib/
+make
+make install
+
+cp /usr/local/coreseek/etc/sphinx.conf.dist /usr/local/coreseek/etc/csft.conf
+
+测试mmseg分词和coreseek搜索:  参考 http://blog.chinaunix.net/uid-20639775-id-3261834.html备注：需要预先设置好字符集为zh_CN.UTF-8，确保正确显示中文，我的系统字符集为en_US.UTF-8也是可以的。
+
+cd testpack
+
+cat var/test/test.xml #此时应该正确显示中文
+
+/usr/local/mmseg3/bin/mmseg -d /usr/local/mmseg3/etc var/test/test.xml
+
+/usr/local/coreseek/bin/indexer -c etc/csft.conf --all
+
+/usr/local/coreseek/bin/search -c etc/csft.conf 网络搜索
+
+此时正确的应该返回
+
+words:
+
+1. '网络': 1 documents, 1 hits
+
+2. '搜索': 2 documents, 5 hits
+
+**************分词库*****************
+ 
+mkdir -p /usr/local/mmseg3/etc
+cp <mmseg_soft_rootdir>/data/unigram.txt /usr/local/mmseg3/etc/
+cd  /usr/local/mmseg3/etc
+../bin/mmseg -u unigram.txt
+生成unigram.txt.uni
+cp unigram.txt.uni uni.lib
+【分词库配置说明】
+vi mmseg.ini
+在里面添加内容[mmseg]merge_number_and_ascii=1;number_and_ascii_joint=-.;compress_space=0;seperate_number_ascii=1;以上解释如下//merge_number_and_ascii: 字母和数字连续出现是非切分number_and_ascii_joint:连接数字和字母可用的符号，如’-’ ‘.’ 等compress_space：暂时无效seperate_number_ascii：是否拆分数字，如 1988 -> 1/x 9/x 8/x 8/x//
+*********************************
+cd /usr/local/coreseek/
+bin/indexer --all [--config sphinx.conf] 用于创建全文索引
+bin/search <搜索关键字>   一个简单的命令行(CLI) 的测试程序，用于测试全文索引;
+bin/searchd [--config sphinx.conf] 一个守护进程，其他软件可以通过这个守护进程进行全文检索;附加：
+1. 如需启用python支持，请安装或者升级至python2.6，configure之中，去掉--without-python，加上--with-python，然后重新编译安装python data source演示：下载2. 如果不可以搜索中文，请首先检查英文是否正常；如英文正常，则请检查：  a. charset_dictpath = etc/dict/   #请确保uni.lib在此目录下      charset_type = zh_cn.utf-8  b. charset_table的配置请注释掉  c. 请确保从数据来源读取的数据，为utf-8字符集；　　MySQL4.1起可以通过SET NAMES设定输出字符集，即使原始数据为GBK；　　MySQL4.1以下版本，请直接联系我们解决GBK问题；  d. 请确保你测试检索时，传送到search或者searchd的字符串尾utf-8  e. 请查看search或者Query返回信息中，分词信息是否正确  d. 词典的设置和构建，具体请查看mmseg  f. 请前往 论坛 提出问题3. 如果提示：iniparser: cannot open /usr/local/csft/mmseg.ini　请前往查看mmseg.ini具体设置方法4. 如果提示no working pthreads library found，请参考。===============================================================5. coreseek启动脚本coreseek源码包里没有启动程序，只能手动通过命令来启动，将下面的文件命名为shinxed，保存在/etc/ini.d/里，就可以实现相应的系统自动启过徎。
+
+#!/bin/sh
+# sphinx: Startup script for Sphinx search
+#
+# chkconfig: 345 86 14
+# description: This is a daemon for high performance full text \
+# search of MySQL and PostgreSQL databases. \
+# See http://www.sphinxsearch.com/ for more info.
+#
+# processname: searchd
+# pidfile: /var/run/coreseek.pid
+
+# Source function library.
+. /lib/lsb/init-functions
+
+sphinxlocation=/usr/local/coreseek
+name=coreseek
+daemon=$sphinxlocation/bin/searchd
+config="-c $sphinxlocation/etc/csft_mysql.conf"
+
+RETVAL=0
+
+PATH=$PATH:$sphinxlocation/bin
+
+start() {
+echo -n $"Starting Sphinx daemon: "
+start-stop-daemon --start --quiet --pidfile /var/run/$name.pid \
+--exec $daemon -- $config || true
+echo "$name."
+}
+
+stop() {
+echo -n $"Stopping Sphinx daemon: "
+start-stop-daemon --stop --quiet --pidfile /var/run/$name.pid \
+--exec $daemon -- $config || true
+}
+
+# See how we were called.
+case "$1" in
+start)
+start
+;;
+stop)
+stop
+;;
+status)
+status $processname
+RETVAL=$?
+;;
+restart)
+stop
+sleep 3
+start
+;;
+condrestart)
+if [ -f /var/run/$name.pid ]; then
+stop
+sleep 3
+start
+fi
+;;
+*)
+echo $"Usage: $0 {start|stop|status|restart|condrestart}"
+;;
+esac
+exit $RETVAL
+
+
+其中condrestart是conditional restart的意思，如果服务当前已经是运行的话，它可以重启这个服务，但是如果服务没有运行，condrestart是无法启动这个服务的。而restart都可以。然后可以使用 sudo /etc/inid.d/sphinxed start来启动ubuntu下开机自动启动：sudo update-rc.d sphinxed defaultsstart-stop-daemon是一个很优秀的后台运行管理程序,采用C开发。Ubuntu上使用start-stop-daemon比较方便,CetnOS就要手动安装下。
+
+yum install gcc
+cd /tmp
+wget http://developer.axis.com/download/distribution/apps-sys-utils-start-stop-daemon-IR1_9_18-2.tar.gz
+tar zxf apps-sys-utils-start-stop-daemon-IR1_9_18-2.tar.gz
+cd apps/sys-utils/start-stop-daemon-IR1_9_18-2/
+gcc start-stop-daemon.c -o start-stop-daemon
+cp start-stop-daemon /usr/local/bin/start-stop-daemon
+
+5. SphinxClient 安装php扩展sphinx或者可以直接使用$root_path/coreseek-version/testpack/api/目录中的提供的api接口文件1.安装
+
+1、先安装sphinxclient
+#cd /usr/local/src
+#wget http://sphinxsearch.com/files/sphinx-0.9.9.tar.gz
+#tar xzvf sphinx-0.9.9.tar.gz
+#cd sphinx-0.9.9/api/libsphinxclient
+#vim sphinxclient.c
+找到
+void sock_close ( int sock );
+改为
+static void sock_close ( int sock );
+#./configure --prefix=/usr/local/sphinxclient
+#make
+#make install
+2、安装sphinx扩展
+#wget http://pecl.php.net/get/sphinx-1.0.4.tgz
+#tar xvzf sphinx-1.0.4.tgz
+#cd sphinx-1.0.4
+#/usr/local/php/bin/phpize
+#./configure --with-php-config=/usr/local/php/bin/php-config --with-sphinx=/usr/local/sphinxclient
+#make
+#make install
+修改php.ini
+extension_dir = "/usr/local/php/lib/php/extensions/no-debug-non-zts-20060613/"
+[sphinx]
+extension=sphinx.so
+
+
+2.测试   1、安装sphinx      请参照文档http://linux008.blog.51cto.com/2837805/6220882、编写测试文件
+
+#vim sphinx.php
+
+$s = new SphinxClient;
+setServer("localhost", 9312);
+$s->setMatchMode(SPH_MATCH_ANY);
+$s->setMaxQueryTime(3);
+$result = $s->query("demo");
+var_dump($result);
+?>
+#/usr/local/php/bin/php sphinx.php 运行结果
+array(9) {
+["error"]=>
+string(0) ""
+["warning"]=>
+string(0) ""
+["status"]=>
+int(0)
+["fields"]=>
+array(5) {
+[0]=>
+string(6) "cat_id"
+[1]=>
+string(13) "provider_name"
+[2]=>
+string(12) "goods_number"
+[3]=>
+string(18) "promote_start_date"
+[4]=>
+string(8) "keywords"
+}
+["attrs"]=>
+array(8) {
+["goods_sn"]=>
+string(1) "3"
+["goods_name"]=>
+string(1) "3"
+["brand_id"]=>
+string(1) "1"
+["goods_weight"]=>
+string(1) "5"
+["market_price"]=>
+string(1) "5"
+["shop_price"]=>
+string(1) "5"
+["promote_price"]=>
+string(1) "5"
+["gid"]=>
+string(10) "1073741825"
+}
+["total"]=>
+int(0)
+["total_found"]=>
+int(0)
+["time"]=>
+float(0)
+["words"]=>
+array(1) {
+["demo"]=>
+array(2) {
+["docs"]=>
+int(0)
+["hits"]=>
+int(0)
+}
+}
+}
+
+
+
+
+

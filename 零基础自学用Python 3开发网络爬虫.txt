@@ -1,0 +1,235 @@
+零基础自学用Python 3开发网络爬虫
+原文出处： Jecvay Notes （@Jecvay）   
+由于本学期好多神都选了Cisco网络课, 而我这等弱渣没选, 去蹭了一节发现讲的内容虽然我不懂但是还是无爱. 我想既然都本科就出来工作还是按照自己爱好来点技能吧, 于是我就不去了. 一个人在宿舍没有点计划好的事情做就会很容易虚度, 正好这个学期主打网络与数据库开发, 那就先学学Python开发爬虫吧. 我失散多年的好朋友Jay Loong突然说他会爬虫了, 我感到真棒, 我也要学 :D 因为一个星期有两节Cisco课, 所以本系列博文也就一周两更。
+选择一门语言
+爬虫可以用各种语言写, C++, Java都可以, 为什么要Python? 首先用C++搞网络开发的例子不多(可能是我见得太少), 然后由于Oracle收购了Sun, Java目前虽然在Android开发上很重要, 但是如果Google官司进展不顺利, 那么很有可能用Go语言替代掉Java来做Android开发. 在这计算机速度高速增长的年代里, 选语言都要看他爹的业绩, 真是稍不注意就落后于时代. 随着计算机速度的高速发展, 某种语言开发的软件运行的时间复杂度的常数系数已经不像以前那么重要, 我们可以越来越偏爱为程序员打造的而不是为计算机打造的语言. 比如Ruby这种传说中的纯种而又飘逸的的OOP语言, 或者Python这种稍严谨而流行库又非常多的语言, 都大大弱化了针对计算机运行速度而打造的特性, 强化了为程序员容易思考而打造的特性. 所以我选择Python。
+选择Python版本
+有2和3两个版本, 3比较新, 听说改动大. 根据我在知乎上搜集的观点来看, 我还是倾向于使用”在趋势中将会越来越火”的版本, 而非”目前已经很稳定而且很成熟”的版本. 这是个人喜好, 而且预测不一定准确. 但是如果Python3无法像Python2那么火, 那么整个Python语言就不可避免的随着时间的推移越来越落后, 因此我想其实选哪个的最坏风险都一样, 但是最好回报却是Python3的大. 其实两者区别也可以说大也可以说不大, 最终都不是什么大问题. 我选择的是Python 3。
+选择参考资料
+由于我是一边学一边写, 而不是我完全学会了之后才开始很有条理的写, 所以参考资料就很重要(本来应该是个人开发经验很重要, 但我是零基础).
+
+Python官方文档
+知乎相关资料(1) 这篇非常好, 通俗易懂的总览整个Python学习框架.
+知乎相关资料(2)
+
+写到这里的时候, 上面第二第三个链接的票数第一的回答已经看完了, 他们提到的有些部分(比如爬行的路线不能有回路)我就不写了.
+一个简单的伪代码
+以下这个简单的伪代码用到了set和queue这两种经典的数据结构, 集与队列. 集的作用是记录那些已经访问过的页面, 队列的作用是进行广度优先搜索.
+
+
+
+ 
+ 
+ 
+ 
+ 
+Python
+
+ 
+
+
+
+
+
+
+1
+2
+3
+4
+5
+6
+7
+8
+9
+10
+11
+
+
+
+
+queue Q
+set S
+StartPoint = "http://jecvay.com"
+Q.push(StartPoint)  # 经典的BFS开头
+S.insert(StartPoint)  # 访问一个页面之前先标记他为已访问
+while (Q.empty() == false)  # BFS循环体
+  T = Q.top()  # 并且pop
+  for point in PageUrl(T)  # PageUrl(T)是指页面T中所有url的集合, point是这个集合中的一个元素.
+    if (point not in S)
+      Q.push(point)
+      S.insert(point)
+
+
+
+
+
+
+
+这个伪代码不能执行,  我觉得我写的有的不伦不类, 不类Python也不类C++.. 但是我相信看懂是没问题的, 这就是个最简单的BFS结构. 我是看了知乎里面的那个伪代码之后, 自己用我的风格写了一遍. 你也需要用你的风格写一遍.
+这里用到的Set其内部原理是采用了Hash表, 传统的Hash对爬虫来说占用空间太大, 因此有一种叫做Bloom Filter的数据结构更适合用在这里替代Hash版本的set. 我打算以后再看这个数据结构怎么使用, 现在先跳过, 因为对于零基础的我来说, 这不是重点.
+代码实现(一): 用Python抓取指定页面
+我使用的编辑器是Idle, 安装好Python3后这个编辑器也安装好了, 小巧轻便, 按一个F5就能运行并显示结果. 代码如下:
+
+
+
+ 
+ 
+ 
+ 
+Python
+
+ 
+
+
+
+
+
+
+1
+2
+3
+4
+5
+6
+7
+
+
+
+
+#encoding:UTF-8
+import urllib.request
+ 
+url = "http://www.baidu.com"
+data = urllib.request.urlopen(url).read()
+data = data.decode('UTF-8')
+print(data)
+
+
+
+
+
+
+
+
+urllib.request是一个库, 隶属urllib. 点此打开官方相关文档. 官方文档应该怎么使用呢? 首先点刚刚提到的这个链接进去的页面有urllib的几个子库, 我们暂时用到了request, 所以我们先看urllib.request部分. 首先看到的是一句话介绍这个库是干什么用的:
+
+The urllib.request module defines functions and classes which help in opening URLs (mostly HTTP) in a complex world — basic and digest authentication, redirections, cookies and more.
+
+然后把我们代码中用到的urlopen()函数部分阅读完.
+
+urllib.request.urlopen(url, data=None, [timeout, ]*, cafile=None, capath=None, cadefault=False)
+
+重点部分是返回值, 这个函数返回一个 http.client.HTTPResponse 对象, 这个对象又有各种方法, 比如我们用到的read()方法, 这些方法都可以根据官方文档的链接链过去. 根据官方文档所写, 我用控制台运行完毕上面这个程序后, 又继续运行如下代码, 以更熟悉这些乱七八糟的方法是干什么的.
+
+
+
+ 
+ 
+ 
+ 
+Python
+
+ 
+
+
+
+
+
+
+1
+2
+3
+4
+5
+6
+7
+8
+9
+10
+11
+12
+
+
+
+
+>>> a = urllib.request.urlopen(full_url)
+>>> type(a)
+<class ‘http.client.HTTPResponse’>
+ 
+>>> a.geturl()
+‘http://www.baidu.com/s?word=Jecvay’
+ 
+>>> a.info()
+<http.client.HTTPMessage object at 0x03272250>
+ 
+>>> a.getcode()
+200
+
+
+
+
+
+
+
+ 
+代码实现(二): 用Python简单处理URL
+如果要抓取百度上面搜索关键词为Jecvay Notes的网页, 则代码如下
+
+
+
+ 
+ 
+ 
+ 
+Python
+
+ 
+
+
+
+
+
+
+1
+2
+3
+4
+5
+6
+7
+8
+9
+10
+11
+12
+13
+
+
+
+
+import urllib
+import urllib.request
+ 
+data={}
+data['word']='Jecvay Notes'
+ 
+url_values=urllib.parse.urlencode(data)
+url="http://www.baidu.com/s?"
+full_url=url+url_values
+ 
+data=urllib.request.urlopen(full_url).read()
+data=data.decode('UTF-8')
+print(data)
+
+
+
+
+
+
+
+data是一个字典, 然后通过urllib.parse.urlencode()来将data转换为 ‘word=Jecvay+Notes’的字符串, 最后和url合并为full_url, 其余和上面那个最简单的例子相同. 关于urlencode(), 同样通过官方文档学习一下他是干什么的. 通过查看
+
+urllib.parse.urlencode(query, doseq=False, safe=”, encoding=None, errors=None)
+urllib.parse.quote_plus(string, safe=”, encoding=None, errors=None)
+
+大概知道他是把一个通俗的字符串, 转化为url格式的字符串.

@@ -1,0 +1,31 @@
+Python安装模块出错（ImportError: No module named setuptools）解决方法
+
+Python安装模块出错（ImportError: No module named setuptools）解决方法
+(
+
+
+
+
+ 
+言
+
+
+
+
+
+ 
+    Python第三方模块中一般会自带setup.py文件，在Windows环境下，我们只需要使用命令
+    cd c:\Temp\foo
+    python setup.py install
+    两个命令就可以完成第三方模块的安装了。第一个cd命令将当前目前切换到待安装的第三方模块的目录下（这里假设第三方模块解压后的目录为c:\Temp\foo），第二个命令就执行安装了。安装的过程中可能会出现“ImportError: No module named setuptools”的错误提示，这是新手很常遇见的错误提示。不用担心，这是因为Windows环境下Python默认是没有安装setuptools这个模块的，这也是一个第三方模块。下载地址为http://pypi.python.org/pypi/setuptools。
+    如果是Windows环境的话，下载exe形式的安装程序就可以了（傻瓜式安装，非常快）。安装了setuptools之后，再运行“python setup.py install”就可以方便地安装各种第三方模块了。
+ 
+    2014-08-07更新：
+    现在http://pypi.python.org/pypi/setuptools上面貌似没有提供exe下载了，取而代之的是一个自动化下载安装的脚本https://bootstrap.pypa.io/ez_setup.py，下载该脚本后运行
+    python ez_setup.py
+    即可。脚本会自动判断python的版本，自动下载，安装。
+ 
+    如果是Linux环境的话，可能稍微麻烦一点，可能是笔者能力不够吧。下面简单说一下Linux下setuptools的安装过程。同样是在http://pypi.python.org/pypi/setuptools这个地方下载setuptools-0.6c11-py2.7.egg文件到本地，使用chmod +x setuptools-0.6c11-py2.7.egg命令使文件成为可执行文件。然后运行sudo sh setuptools-0.6c11-py2.7.egg命令完成安装。
+    上述方法经笔者测试可行。如果有什么问题，可以留言。
+ 
+

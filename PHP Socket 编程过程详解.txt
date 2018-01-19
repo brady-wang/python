@@ -1,0 +1,109 @@
+PHP Socket 编程过程详解
+PHP Socket 编程过程详解
+ 
+
+Socket用于进程间通信。进程间通信通常基于客户端—服务端模型。此时，客户端—服务端是可以彼此交互的应用程序。客户端和服务端之间的交互需要连接。Socket编程负责的就是为应用程序之间建立可进行交互的连接。
+在本文中，我们将学习如何用PHP创建一个简单的客户端—服务端。我们还将学习如何客户端应用程序如何发送消息到服务端，以及如何从服务端接受消息。
+
+使用代码
+目的：开发一个客户端用于发送string消息到服务端，服务端将相同的信息反转后返回给客户端。
+PHP服务器
+第1步：设置变量，如“主机”和“端口”
+$host = "127.0.0.1";
+$port = 5353;
+// No Timeout 
+set_time_limit(0);
+端口号可以是1024 -65535之间的任何正整数。
+第2步：创建socket
+$socket = socket_create(AF_INET, SOCK_STREAM, 0) or die("Could not create socket\n");
+第3步：绑定socket到端口和主机
+创建的socket资源绑定到IP地址和端口号。
+$result = socket_bind($socket, $host, $port) or die("Could not bind to socket\n");
+第4步：启动socket监听
+在绑定到IP和端口后，服务端开始等待客户端的连接。在没有连接之前它就一直等下去。
+$result = socket_listen($socket, 3) or die("Could not set up socket listener\n");
+第5步：接受连接
+这个函数会接受所建的socket传入的连接请求。在接受来自客户端socket的连接后，该函数返回另一个socket资源，实际上就是负责与相应的客户端socket通信。这里的“$spawn”就是负责与客户端socket通信的socket资源。
+$spawn = socket_accept($socket) or die("Could not accept incoming connection\n");
+到现在为止，我们已经准备好了服务端socket ，但实际上这个脚本并没有做任何事情。所以为了继续完成上述目标，我们将读取客户端socket消息，然后将接收到的消息反转后发回给客户端socket。
+第6步：从客户端socket读取消息
+$input = socket_read($spawn, 1024) or die("Could not read input\n");
+第7步：反转消息
+$output = strrev($input) . "\n";
+第8步：发送消息给客户端socket
+socket_write($spawn, $output, strlen ($output)) or die("Could not write output\n");
+关闭socket
+socket_close($spawn);
+socket_close($socket);
+这就完成了服务端。现在，我们学习如何创建PHP客户端。
+PHP客户端
+前两个步骤与服务端相同。
+第1步：设置变量，如“主机”和“端口”
+$host = "127.0.0.1";
+$port = 5353;
+// No Timeout 
+set_time_limit(0);
+注：这里的端口和主机应该和服务端中的定义是相同的。
+第2步：创建socket
+$socket = socket_create(AF_INET, SOCK_STREAM, 0) or die("Could not create socket\n");
+第3步：连接到服务端
+$result = socket_connect($socket, $host, $port) or die("Could not connect toserver\n");
+此时和服务端不同，客户端socket不绑定端口和主机。相反，它连接到服务端socket，等待接受来自客户端socket的连接。这一步建立了客户端socket到服务端socket的连接。
+第4步：写入服务端socket
+socket_write($socket, $message, strlen($message)) or die("Could not send data to server\n");
+在此步骤中，客户端socket的数据被发送到服务端socket。
+第5步：阅读来自服务端的响应
+$result = socket_read ($socket, 1024) or die("Could not read server response\n");
+echo "Reply From Server  :".$result;
+第6步：关闭socket
+socket_close($socket);
+完整的代码
+服务端（server.php）
+// set some variables
+$host = "127.0.0.1";
+$port = 25003;
+// don't timeout!
+set_time_limit(0);
+// create socket
+$socket = socket_create(AF_INET, SOCK_STREAM, 0) or die("Could not create socket\n");
+// bind socket to port
+$result = socket_bind($socket, $host, $port) or die("Could not bind to socket\n");
+// start listening for connections
+$result = socket_listen($socket, 3) or die("Could not set up socket listener\n");
+
+// accept incoming connections
+// spawn another socket to handle communication
+$spawn = socket_accept($socket) or die("Could not accept incoming connection\n");
+// read client input
+$input = socket_read($spawn, 1024) or die("Could not read input\n");
+// clean up input string
+$input = trim($input);
+echo "Client Message : ".$input;
+// reverse client input and send back
+$output = strrev($input) . "\n";
+socket_write($spawn, $output, strlen ($output)) or die("Could not write output\n");
+// close sockets
+socket_close($spawn);
+socket_close($socket);
+客户端（client.php）
+$host    = "127.0.0.1";
+$port    = 25003;
+$message = "Hello Server";
+echo "Message To server :".$message;
+// create socket
+$socket = socket_create(AF_INET, SOCK_STREAM, 0) or die("Could not create socket\n");
+// connect to server
+$result = socket_connect($socket, $host, $port) or die("Could not connect to server\n");  
+// send string to server
+socket_write($socket, $message, strlen($message)) or die("Could not send data to server\n");
+// get server response
+$result = socket_read ($socket, 1024) or die("Could not read server response\n");
+echo "Reply From Server  :".$result;
+// close socket
+socket_close($socket);
+建立上述文件（server.php和client.php）后，执行如下操作：
+
+复制www目录中的这些文件（假设WAMP），安置于C:\wamp。
+打开Web浏览器，在地址栏中键入localhost 。
+先浏览server.php然后client.php。
+

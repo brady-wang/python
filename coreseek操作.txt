@@ -1,0 +1,12 @@
+coreseek操作
+ 开启服务$  /usr/local/coreseek/bin/searchd -c /usr/local/coreseek/etc/csft.conf
+ 
+
+重新索引:
+/usr/local/coreseek/bin/indexer -c /usr/local/coreseek/etc/viewspot.conf --all
+ 
+ 
+如果重建索引时守护进程正在运行，会报错，需要运行下面的指令，会重建索引并且重开守护进程
+/usr/local/sphinx/bin/indexer -c /usr/local/sphinx/etc/test.conf --all --rotate
+
+索引完之后启动searchd:/usr/local/coreseek/bin/search -c /usr/local/coreseek/etc/csft.conf  "波音飞机博物馆"/usr/local/coreseek/bin/search -c /usr/local/coreseek/etc/viewspot.conf  "波音飞机博物馆"/usr/local/coreseek/bin/search "波音飞机博物馆"/usr/local/coreseek/bin/searchd -c /usr/local/coreseek/etc/csft.conf --stop查看所引进程ps auxww | grep searchd  kill 23593

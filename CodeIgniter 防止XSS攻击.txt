@@ -1,0 +1,17 @@
+CodeIgniter 防止XSS攻击
+CodeIgniter 包含了跨站脚本攻击的防御机制，它可以自动地对所有POST以及COOKIE数据进行过滤，或者您也可以针对单个项目来运行它。默认情况下，它 不会 全局运行，因为这样也需要一些执行开销，况且您也不一定在所有情况下都用得到它.XSS过滤器会查找那些常被用来触发JavaScript或者其他类型的企图劫持cookie或进行其它恶意行为的代码. 如果发现任何不允许的内容，它将把那些内容转换为字符实体，以确保安全.注意: 此函数只应该用来处理那些提交过来的数据. 它不适合在常规运行时使用，因为它执行时的开销也是不容忽视的.1、要使用XSS过滤器对数据进行过滤，请使用此函数:
+$this->security->xss_clean()
+使用示例：
+$data = $this->security->xss_clean($data);
+2、如果你希望过滤器能自动过滤所有被访问到的POST或者COOKIE数据，请打开你的 application/config/config.php 文件，进行如下设置即可启用自动过滤:
+$config['global_xss_filtering'] = TRUE;
+说明: 如果你使用表单验证类，同样也有XSS过滤的选项.
+如果开启了全局xss过滤，则获取表单数据时可以直接使用
+$this->input->post('name')
+如果，没有开启全局设置，只是希望对单一的数据进行xss过滤，我们可以这样使用：
+$this->input->post('name',TRUE)
+3、第二个可选的参数, is_image, 允许此函数对图片进行检测以发现那些潜在的 XSS 攻击, 这对于保证文件上传的安全非常有用. 当此参数被设置为 TRUE 时, 此函数的返回值不是一个修改过的字符串而是一个布尔值, 如果图片是安全的则返回 TRUE, 相反, 如果图片中包含有潜在的、可能会被浏览器尝试运行的恶意信息, 函数将返回FALSE.
+if ($this->security->xss_clean($file, TRUE) === FALSE)
+{
+    // file failed the XSS test
+}

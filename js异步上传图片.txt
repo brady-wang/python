@@ -1,0 +1,62 @@
+js异步上传图片
+<!DOCTYPE html><html xmlns = "http://www.w3.org/1999/xhtml" ><head><meta http-equiv="content-type" content="text/html;charset=utf-8" /><title> </title><script type="text/javascript" src="jquery.js"></script><script type = "text/javascript" >function ProcessFile( e ) {   var e= e||event;var file = document.getElementById('file').files[0];
+if ( file ) { var reader = new FileReader();reader.onload = function ( event ) { var txt = event.target.result;
+var img = document.createElement("img");img.src = txt;
+img.style.cssText="width:100px;height:100px;border:1px solid red;"document.getElementById("result").appendChild( img );};}reader.readAsDataURL( file );}function contentLoaded() {document.getElementById('file').addEventListener( 'change' ,ProcessFile , false );}window.addEventListener( "DOMContentLoaded" , contentLoaded , false );
+window.onload = function(){  var oBtn = document.getElementById('btn1');  oBtn.onclick = function(){      var fd = new FormData();      var file =document.getElementById("file").files[0];      console.log(file)      fd.append('file',file);      $.ajax({        type:"post",        url:'a.php',        processData: false,        contentType: false,        data:fd,        success:function(data)        {         }      })  }}</script></head><body>请选择一个图片: <input type = "file" id = "file" name = "file" /><div id = "result"> </div><br><button id="btn1">上传 </button></body></html>
+ 
+ 
+平时做表单都是跳转提交的，但是今天要做一个ajax图片异步上传，
+网上搜索了下，方法都比较老了，居然还有用flash的，
+普通的表单上传通过jquery的serialize()转换成querystring后就可以直接ajax post 上传，但是碰到文件上传就不奏效了，型号html5有个方法FormData()可以实现上传，
+我写的代码如下：
+function upThumbSubmit() {
+if(!window.FormData) {　
+        alert('your brower is too old');
+        return false;
+    }
+ var formData = new FormData($( "#upForm" )[0]);
+
+  $.ajax({
+        url:'?c=api&a=upload',
+        type:'post',
+        data:formData,
+        dataType:'json',
+        success:function(data){
+          alert(data);
+          return false;
+
+        }
+  });
+
+
+}
+
+但是报错了，错误如下
+TypeError: 'append' called on an object that does not implement interface FormData.
+既然浏览器明明显示支持formdata,为何这里显示append不是formdata接口呢？
+答案只可能是jquery重载了formdata
+在里面加上2个option,就好了，正确代码如下
+function upThumbSubmit() {
+if(!window.FormData) {　
+        alert('your brower is too old');
+        return false;
+    }
+ var formData = new FormData($( "#upForm" )[0]);
+
+  $.ajax({
+        url:'?c=api&a=upload',
+        type:'post',
+        data:formData,
+        processData: false,
+        contentType: false,
+        dataType:'json',
+        success:function(data){
+          alert(data);
+          return false;
+
+        }
+  });
+
+
+}

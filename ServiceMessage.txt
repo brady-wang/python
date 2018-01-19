@@ -1,0 +1,7 @@
+ServiceMessage
+<?php      class ServiceMessage    {    	private $errorCode = array(    			'1000' => "系统错误",    			'1001' => "用户错误",    			'1002' => "密码错误",    	);
+    	CONST SYSTEM_CODE = '1000';
+    	public function successMessage($data)    	{	    		$data['message'] = empty($data['message']) ? '操作成功' : $data['message'];    		$arr = array(    			'code'    => 0,    			'message' => $this->errorCode[$data['code']],    			'data'    => $data,    		);    		return $arr;    	}
+    	public function errorMessage($code)    	{    		$code = empty($code) ? SELF::SYSTEM_CODE :$code;     		$arr = array(    			'code'    => $code,    			'message' => $this->errorCode[$code],    			'data'    => array(),    		);    		return $arr;    	}
+    	public function successResponse($data)    	{    		header("Content-Type:application/json");    		echo json_encode($data,JSON_UNESCAPED_UNICODE);exit;    	}
+    	public function errorResponse($code)    	{    		header("Content-Type:application/json");    		$data = $this->errorMessage($code);    		echo json_encode($data,JSON_UNESCAPED_UNICODE);exit;    	}    }

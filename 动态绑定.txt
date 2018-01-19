@@ -1,0 +1,2 @@
+动态绑定
+$(document).on("mouseover",".not_receive_code",function(){$(".msg_info_ui").stop().fadeIn();});$(document).on("mouseout",".not_receive_code",function(){    $(".msg_info_ui").stop().fadeOut();});

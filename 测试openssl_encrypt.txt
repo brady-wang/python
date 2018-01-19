@@ -1,0 +1,40 @@
+测试openssl_encrypt
+
+<?php
+
+//$string = 'It works ? Or not it works ?';
+//$pass = '1234';
+//$method = 'aes128';
+//
+//
+//
+//$a = openssl_get_cipher_methods();
+//print_r($a);
+
+//foreach($a as $v) {
+//    $res = openssl_encrypt($string,$v,$pass,OPENSSL_RAW_DATA,"dddddddd33333335");
+//    var_dump($res);
+//    echo "<br>";
+//}
+
+?>
+
+<?php
+//$key should have been previously generated in a cryptographically safe way, like openssl_random_pseudo_bytes
+$plaintext = "234223423";
+$cipher = "aes-128-cbc";
+$key = "234wsdfs@#234";
+$tag = "sdwewew";
+if (in_array($cipher, openssl_get_cipher_methods()))
+{
+    $ivlen = openssl_cipher_iv_length($cipher);
+    $iv = "0000000000000000";
+    $ciphertext = openssl_encrypt($plaintext, $cipher, $key, $options=0, $iv);
+    //store $cipher, $iv, and $tag for decryption later
+    $original_plaintext = openssl_decrypt($ciphertext, $cipher, $key, $options=0, $iv);
+    echo $original_plaintext."\n";
+}
+?>
+
+
+　　

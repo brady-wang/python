@@ -1,0 +1,49 @@
+nginx的平滑升级，不间断服务
+
+
+nginx的平滑升级，不间断服务
+
+
+ 
+
+
+
+Nginx更新真的很快，最近nginx的1.0.5稳定版，nginx的0.8.55和nginx的0.7.69旧的稳定版本已经发布。我一项比较喜欢使用新版本的软件，于是把原来的nginx-1.0.2平滑升级至nginx-1.0.5稳定版。并记录这一过程，参照这一过程也适用其他版本的升级，都是照葫芦画瓢的事情。希望对有需要的朋友有点帮助。
+1. 开始之前先查看一下当前使用的版本。
+# /usr/local/webserver/nginx/sbin/nginx -V
+nginx: nginx version: nginx/1.0.5
+nginx: built by gcc 4.1.2 20080704 (Red Hat 4.1.2-50)
+nginx: TLS SNI support disabled
+nginx: configure arguments: --user=www --group=www --prefix=/usr/local/webserver/nginx --with-http_stub_status_module --with-http_ssl_module --with-http_flv_module --with-cc-opt=-O3 --with-cpu-opt=opteron --with-http_gzip_static_module
+
+※ 注意红色区域，这是以前编译的参数。马上编辑新版本需要用到。
+2.下载新版本：http://nginx.org/en/download.html
+然后：解压 > 便以前的准备 > 编译
+# tar zxvf nginx-1.0.5.tar.gz
+# cd nginx-1.0.5
+# ./configure 
+--user=www 
+--group=www 
+--prefix=/usr/local/webserver/nginx 
+--with-http_stub_status_module 
+--with-http_ssl_module 
+--with-http_flv_module 
+--with-cc-opt='-O3' 
+--with-cpu-opt=opteron 
+--with-http_gzip_static_module
+# make
+3. 执行完后，这里不用在 make install 了，接下来重名/sbin/nginx为nginx.old
+# mv /usr/local/webserver/nginx/sbin/nginx /usr/local/webserver/nginx/sbin/nginx.old
+4. 复制编译后objs目录下的nginx文件到nginx的安装目录sbin/下
+# cp objs/nginx /usr/local/webserver/nginx/sbin/
+5. 测试一下新复制过来文件生效情况：
+# /usr/local/webserver/nginx/sbin/nginx -t
+nginx: the configuration file /usr/local/webserver/nginx/conf/nginx.conf syntax is ok
+nginx: configuration file /usr/local/webserver/nginx/conf/nginx.conf test is successful
+6. 让nginx把nginx.pid文件修改成nginx.pid.oldbin，随即启动nginx，实现不间断
+# kill -USR2 `cat /usr/local/webserver/nginx/nginx.pid`  更新配置文件
+# kill -QUIT `cat /usr/local/webserver/nginx/nginx.pid.oldbin` 优雅的关闭
+7. 升级完成了，最后在看一下升级后的版本
+# /usr/local/webserver/nginx/sbin/nginx -v
+nginx: nginx version: nginx/1.0.5
+

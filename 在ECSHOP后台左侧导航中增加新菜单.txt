@@ -1,0 +1,67 @@
+在ECSHOP后台左侧导航中增加新菜单
+在ECSHOP后台左侧导航中增加新菜单
+ECSHOP教程 / ecshop 教程网(www.ecshop119.com) 2011-11-08
+ 
+
+
+有个别高级用户(懂PHP的)，提到这样的问题：在后台管理左侧导航中新增一个菜单项，或者是修改菜单项的名字、或者是删除某菜单项。希望这篇ECSHOP二次开发教程对您有所帮助：例如：我们要在后台新增一个菜单项“商品采集”。需要修改至少三个文件：/admin/includes/inc_menu.php，/admin/includes/inc_priv.php，/languages/zh_cn/admin/common.php首先修改 /admin/includes/inc_menu.php  在
+
+
+
+$modules['02_cat_and_goods']['goods_auto']             = 'goods_auto.php?act=list';
+
+
+
+ 
+下面增加
+ 
+
+
+
+$modules['02_cat_and_goods']['goods_caiji']             = 'goods_caiji.php';
+
+
+
+ 
+接着打开 /languages/zh_cn/admin/common.php
+ 
+找到
+
+
+
+$_LANG['navigator'] = '自定义导航栏';
+
+
+
+在它下面增加
+ 
+
+
+
+$_LANG['goods_caiji']='商品采集';
+
+
+
+ 
+然后再打开 /admin/includes/inc_priv.php，
+ 
+在
+ 
+
+
+
+$purview['goods_auto']           = 'goods_auto';
+
+
+
+下增加
+
+
+
+$purview['goods_caiji']           = 'goods_caiji';
+
+
+
+ 
+
+

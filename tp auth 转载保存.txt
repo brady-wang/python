@@ -1,0 +1,130 @@
+tp auth 转载保存
+PS:最近需要做一个验证用户权限的功能，在官方和百度看了下，发现大家都是用auth来做验证，官方有很多auth的使用教程，但是都不全面，我也提问了几个关于auth的问题 也没人来回答我，无奈只好一步步看代码研究了。本人基础不好，属于半路出家的那种，希望我的教程大家不要见笑。 新手纯属无奈之举。。。废话不多开始解密：首先说下我使用的Thinkphp版本：ThinkPHP3.2.3完整版auth 翻译成中文就是认证的意思。TP的auth类 核心版 是没有的。完整版才有，这点大家要注意下！1：首先打开Auth.class.php 文件位置 Thinkphp/Library/Think/Auth.class.php2：打开Auth类文件之后我们要建Auth认证所需要的3张表了，Auth类中已经给了表所用的字段了 直接复制回来粘贴到 phpmyadmin中运行sql就可以；Auth所用的张表如下：
+
+//数据库
+ /*
+-- ----------------------------
+-- think_auth_rule，规则表，
+-- id:主键，name：规则唯一标识, title：规则中文名称 status 状态：为1正常，为0禁用，condition：规则表达式，为空表示存在就验证，不为空表示按照条件验证
+-- ----------------------------
+ DROP TABLE IF EXISTS `think_auth_rule`;
+CREATE TABLE `think_auth_rule` (  
+    `id` mediumint(8) unsigned NOT NULL AUTO_INCREMENT,  
+    `name` char(80) NOT NULL DEFAULT '',  
+    `title` char(20) NOT NULL DEFAULT '',  
+    `type` tinyint(1) NOT NULL DEFAULT '1',    
+    `status` tinyint(1) NOT NULL DEFAULT '1',  
+    `condition` char(100) NOT NULL DEFAULT '',  # 规则附件条件,满足附加条件的规则,才认为是有效的规则
+    PRIMARY KEY (`id`),  
+    UNIQUE KEY `name` (`name`)
+) ENGINE=MyISAM  DEFAULT CHARSET=utf8;
+-- ----------------------------
+-- think_auth_group 用户组表， 
+-- id：主键， title:用户组中文名称， rules：用户组拥有的规则id， 多个规则","隔开，status 状态：为1正常，为0禁用
+-- ----------------------------
+ DROP TABLE IF EXISTS `think_auth_group`;
+CREATE TABLE `think_auth_group` ( 
+    `id` mediumint(8) unsigned NOT NULL AUTO_INCREMENT, 
+    `title` char(100) NOT NULL DEFAULT '', 
+    `status` tinyint(1) NOT NULL DEFAULT '1', 
+    `rules` char(80) NOT NULL DEFAULT '', 
+    PRIMARY KEY (`id`)
+) ENGINE=MyISAM  DEFAULT CHARSET=utf8;
+-- ----------------------------
+-- think_auth_group_access 用户组明细表
+-- uid:用户id，group_id：用户组id
+-- ----------------------------
+DROP TABLE IF EXISTS `think_auth_group_access`;
+CREATE TABLE `think_auth_group_access` (  
+    `uid` mediumint(8) unsigned NOT NULL,  
+    `group_id` mediumint(8) unsigned NOT NULL, 
+    UNIQUE KEY `uid_group_id` (`uid`,`group_id`),  
+    KEY `uid` (`uid`), 
+    KEY `group_id` (`group_id`)
+) ENGINE=MyISAM DEFAULT CHARSET=utf8;
+ */
+
+复制代码
+
+PS：大家自行改成自己所需的表前缀即可； 另外要说的一点是：这3张表 大家可以可以改表名，只要字段包含Auth所需的认证字段也可以。如果你把这3张表改名了，只要在Auth的配置项中改成自己对应的表名即可。3：3张表建好 先讲下这3张表的作用 （本人理解有限 大家勿喷）(我的表前缀为tp_)tp_auth_rule(rule翻译成中文为【规则】 合起来就是认证规则)字段概述：id：这个不必多说 相信大家都懂得 （表主键，自增 ，规则ID标识）name：认证规则 （字段保存的是你需要认证的 【模块名/控制器名/方法名】或【自定义规则】 字符串类型 这里大家最好按照 模块名/控制器/方法 来填写，多个规则之间用,隔开即可，当前规则是按照你的思路来定制的，你也可以填写一个 admin 或 * 或 guanliyuan 等！字段长度为80，不要超过这个长度就可以）title：规则描述 这个不多讲type：tinyint类型的，如果type为1， condition字段就可以定义规则表达式。 如定义{score}>5 and {score}<100 表示用户的分数在5-100之间时这条规则才会通过。（默认为1）condition：当type为1时，condition字段里面的内容将会用作正则表达式的规则来配合认证规则来认证用户tp_auth_group(group翻译为中文为 【组】的意思，合起来就是认证组)字段概述：id：这个大家都懂得吧（认证组的ID标识，表主键 自增）title：认证组名称status：是否开启 0为关闭 1为开启 （默认为1 开启）rules ：规则ID （这里填写的是 tp_auth_rule里面的规则的ID，下面会给大家演示）tp_auth_group_access（这个表就俩字段，是规则和组别的中间表）字段概述：uid：会员ID （这里填写是 需要认证的会员ID）group_id：认证组ID （这里填写的是 认证组的ID）Ps：这里跟大家说下我是怎么理解这3张表的关系的：实际上使用Auth是需要4张表的（1.会员表 2.认证规则表 3.认证组表 4.认证中间表），我表达能力不强，简单的说下：a.我在 tp_auth_rule里面添加一个或多个验证规则用来验证你的访问权限 例如：（Admin/Article/Add）增加文章的权限（Admin/Article/Edit）修改文章的权限（Admin/Article/Delete）删除文章的权限Ps：这3个规则可以合并成一个规则，合并成一个规则的话就是: (Admin/Article/Add,Admin/Article/Edit,Admin/Article/Delete)！还有一点：这个规则是80个字节，大家不要超过了； 这个规则你也可以写成 Article （意思就是拥有所有操作文章的权限）也可以写成(Article-Add-Edit-Delete)这样的 意思是拥有文章的增删改权限还可以写成(Article-Add-Edit)扎样的 意思是 拥有文章的增加和修改的权限，没有删除权限总之这里的规则你可以按照自己的思路来，很灵活的。这点超级赞！//为了更多的小白明白我在啰嗦啰嗦：例如：Home/List/Php 拥有访问前台Php栏目的权限Home/List/HTML 拥有访问前台HTML栏目的权限Home/List/PHP,Home/List/HTML 拥有访问前台 PHP 和 HTML 栏目的权限LIST-PHP-HTML 拥有访问前台PHP 和 HTML 栏目的权限总之规则大家自定义 很灵活，只要在你需要认证的地方灵活的运用Auth验证就可以的！ b.在认证组中 添加2个用户组（分别是：信息录入部门、信息审核部门，信息XX部门） status 默认为就行，默认为1 就是开启这个认证组rules 规则ID多个规则用,隔开 例如我现在有4条规则分别是：id为1： Admin/Article/Add 增加文章的权限id为2： Admin/Article/Edit 修改文章的权限id为3: Admin/Article/Delete 删除文章的权限id为4： Article-Add-Edit-Delete 拥有文章的增删改权限分析下：信息录入部 需要的是 文章的 增加和修改还有删除权限，审核部门需要的是 修改和删除的权限 ，信息xx部门需要所有操作信息的权限根据分析 ：信息录入部门的 rules需要的规则为: 1,2,3信息审核部门需要的是：2,3信息XX部门需要的是 4好了，插入数据：信息录入部： title：信息录入部 rules：1,2,3 (插入之后假设ID为1)信息审核部： title:信息审核部 rules: 2,3 （插入之后建设ID为2）信息XX部 ： title:信息XX部 rules:4 （插入之后建设ID为3）c.认证中间表中录入需要认证的会员ID和认证组ID即可ps:假设我现在有会员表为tp_user里面有4个会员分别是：id为1的: 小红id为2的: 小明id为3的: 小张id为4的: 小李下面分配权限：小红和小明是信息录入部门的：那么tp_auth_access如下：uid为 1 的小红 所属认证部为 1（1也就是认证组表中的信息录入部门，拥有增加、修改、删除的权限）uid为 2 的小明 同小红一个级别（功能一样）uid为 3 的小张 所属认证部为 2 （2也就是认证组表中的信息审核部，拥有修改、删除的权限）uid为 4 的小李 所属认证部为 3 （3也就是认证表中的信息XX部 拥有信息的 增加、修改、删除的权限）PS：可能我说的有点绕，但是意思差不多就这样 嘿嘿！ rule表中为所有需要认证的规则条件，group表为部门组，部门的权限为规则表中的规则id，access表为记录用户属于那个部门的！ 这样理解了么？4：现在开始认证权限吧：Ps：这里我要纠正一点：我现在用的Thinkphp版本为ThinkPHP3.2.3完整版：在Auth类中有这么一段话：/*** 权限认证类* 功能特性：* 1，是对规则进行认证，不是对节点进行认证。用户可以把节点当作规则名称实现对节点进行认证。* $auth=new Auth(); $auth->check('规则名称','用户id')* 2，可以同时对多条规则进行认证，并设置多条规则的关系（or或者and）* $auth=new Auth(); $auth->check('规则1,规则2','用户id','and') * 第三个参数为and时表示，用户需要同时具有规则1和规则2的权限。 当第三个参数为or时，表示用户值需要具备其中一个条件即可。默认为or* 3，一个用户可以属于多个用户组(think_auth_group_access表 定义了用户所属用户组)。我们需要设置每个用户组拥有哪些规则(think_auth_group 定义了用户组权限)* * 4，支持规则表达式。* 在think_auth_rule 表中定义一条规则时，如果type为1， condition字段就可以定义规则表达式。 如定义{score}>5 and {score}<100 表示用户的分数在5-100之间时这条规则才会通过。*/有问题的是这一句：2，可以同时对多条规则进行认证，并设置多条规则的关系（or或者and）$auth=new Auth(); $auth->check('规则1,规则2','用户id','and');问题：Auth类中的check方法一共有 5 个参数public function check($name, $uid, $type=1, $mode='url', $relation='or')所以官方类中的 第三个参数填写and视距上是不起任何作用的！不知道是不是这样 哈！。。。。Ps：在使用auth之前，要先配置下auth所用的配置项：如果你没修改auth_rule,auth_group,auth_group_access表名称的话，只要配置你的会员表即可。在配置项中增加以下配置项：
+
+ //Auth配置
+    'AUTH_CONFIG' => array(
+        // 用户组数据表名
+        //'AUTH_GROUP' => 'tp_group',
+        // 用户-用户组关系表
+        //'AUTH_GROUP_ACCESS' => 'tp_group_access',
+        // 权限规则表
+        //'AUTH_RULE' => 'tp_rule',
+        // 用户信息表
+        'AUTH_USER' => 'tp_admin'
+    ),
+ 
+
+复制代码
+
+还要补充一点，会员表中会员ID必须为主键！我现在在Home/Login/Index下做实验：先声明Auth类：
+
+<?php
+ namespace Home\Controller;
+ class LoginController extends \Think\Controller{
+    public function IndexAction(){
+
+        //声明Auth认证类 
+        $auth = new \Think\Auth();
+        
+        /*
+            验证单个条件
+            验证 会员id 为 1 的 小红是否有 增加信息的权限
+            
+            check方法中的参数解释：
+                参数1：Admin/Article/Add 假设我现在请求 Admin模块下Article控制器的Add方法
+                参数2： 1 为当前请求的会员ID
+        */
+        var_dump( $auth->check( 'Admin/Article/Add', 1 ) ); // boolean true
+
+        
+        /*
+            同时验证多个条件
+            验证 会员id 为 1 的小红是否有增加信息，修改信息 和一个不存在的规则 的权限
+            
+            参数解释：
+                参数1：多条规则同时验证 ， 验证是否拥有增加、修改、删除的权限
+                参数2：当前请求的会员ID   
+
+            ps ：XXX是一个不存在的规则为什么会返回真呢？ 因为check方法 第5个参数默认为 or 也就是说 多个规则中只要满足一个条件即为真   
+        */
+        //var_dump( $auth->check( 'Admin/Article/Add,Admin/Article/Edit,Admnin/Article/Xxx', 1 ) ); //  boolean true        
+
+        /*
+            同时验证多个条件 并且 都为真
+            验证 会员id 为 1 的小红是否具有 增加 修改 删除 的权限
+
+            参数解释
+                参数1：多条规则同时验证 ，验证是否拥有 增加 修改 删除的权限
+                参数2：当前请求的会员ID
+                参数3：是否用正则验证condition中的内容
+                参数4：
+                参数5：必须满足全部规则才通过 
+        */
+        //var_dump( $auth->check( 'Admin/Article/Add,Admin/Article/Edit,Admin/Article/Xxx', 1, 1, '', 'and' ) );        //boolean false     
+    }
+ }
+ ?>
+
+复制代码
+
+Ps:上面的例子是最基本的认证，当然朋友们可以自己定义自己的验证规则下面说一下其他例子：rule规则表中的name可以写 *** 或者 admin 或其他字符来代替一个通用验证规则；在验证的时候可以用 MODULE_NAME.'/'.CONTROLLER_NAME.'/'.ACTION_NAME 来自动获取当前的 模块名称/控制器名称/方法名称例如：$auth->check( MODULE_NAME.'/'.CONTROLLER_NAME.'/'.ACTION_NAME, 1 ) );/*还有一些我没了解的使用方法：例如：*/
+
+if ($mode=='url' && $query!=$auth ) {
+    parse_str($query,$param); //解析规则中的param
+    $intersect = array_intersect_assoc($REQUEST,$param);
+    $auth = preg_replace('/\?.*$/U','',$auth);
+    if ( in_array($auth,$name) && $intersect==$param ) {  //如果节点相符且url参数满足
+        $list[] = $auth ;
+    }
+ }
+
+复制代码
+
+这里的$query!=$anth 不知道怎么用这个，我本地测试的时候在rule规则中增加了一个规则是 test?aa=1&bb=2在使用auth的时候这样用可以通过认证：url中get或者POST必须有这个aa=1&bb=2才会验证成功,很迷糊这里到底是怎么个情况,有了解的大神希望告知下$auth->check( 'test' , 1 );*难道这个 query!=auth 是为了不支持pathinfo的 ?module=home&controller=user&action=login 验证这样的？搞不懂。。。*Ps：你可以写一个公共方法，把auth认证写到方法里面 方便调用！

@@ -1,0 +1,42 @@
+java环境搭建
+一、安装JDK
+ 
+    1、安装
+JDK当前最高版本为1.7。 下载并运行JDK 1.7安装程序jdk-7u25-windows-i586.exe，直接安装到C盘(也可以在其它盘，但文件名一定要是英文名），其它选项在安装过程中保持默认。分别生成JDK目录和JRE目录：  
+
+上图的jdk和jre是配套的。
+    2、配置环境变量
+  配置系统环境变量：在“我的电脑”上点右键—>“属性”—>高级系统设置-->“高级”—> “环境变量”。
+ 
+1)新建系统变量:
+JAVA_HOME：C:\jdk1.7.0_25
+JRE_HOME: C:\jre7
+
+(红色部分为jdk安装路径，如果想用其它的jdk版本，只需修改这个路径就行了！！，前面的“JAVA_HOME”也可以随意命名，一般是大写）
+
+ 
+2）添加Path路径
+CLASSPATH：.%JAVA_HOME%\lib;%JRE_HOME%\lib;（注意：最前面的点号表示当前目录，不能省略；最后的一个分号也不能省略）
+
+（配置里的JAVA_HOME要跟上面新建的一样，设置这个变量的目的是系统每次都会启动，不用手工维护了）
+ 
+到这里，JDK安装完毕。　看jdk的版本
+
+打开cmd， 输入命令： java -version 就行了
+
+ 
+二、安装Tomcat
+1、安装
+ 
+     下载Tomcat服务器 apache-tomcat-7.0.42-windows-x86.zip，并解压到C盘根目录：C:\apache-tomcat-7.0.42（路径随意，要是英文名）。
+
+       
+2、配置环境变量
+
+   1)新建系统变量:CATALINA_HOME：C:\apache-tomcat-7.0.42  2）添加Path路径CLASSPATH：.%JAVA_HOME%\lib;%JRE_HOME%\lib;%CATALINA_HOME%\lib;
+
+   3)测试Tomcat   运行CMD，进入目录C:\apache-tomcat-7.0.42\bin，运行startup:
+ 
+在浏览器URL地址栏中输入：http://localhost:8080，显示Tomcat信息页表示配置成功：
+
+

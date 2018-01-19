@@ -1,0 +1,2 @@
+js 随机时间
+var nocache =  new Date().getTime();

@@ -1,0 +1,49 @@
+ci日志记录
+　　
+
+ 
+log_message($level, $message)
+
+
+参数:
+
+
+$level (string) -- Log level: 'error', 'debug' or 'info'
+$message (string) -- Message to log
+
+
+
+返回类型:
+
+void
+
+
+
+
+该函数用于向你的日志文件中写入信息，第一个参数你必须提供 三个信息级别中的一个，用于指定记录的是什么类型的信息（调试， 错误和一般信息），第二个参数为信息本身。
+示例:
+
+
+if ($some_var == '')
+{
+    log_message('error', 'Some variable did not contain a value.');
+}
+else
+{
+    log_message('debug', 'Some variable was correctly set');
+}
+
+log_message('info', 'The purpose of some variable is to provide some value.');
+
+
+
+有三种信息类型：
+
+错误信息。这些是真正的错误，例如 PHP 错误或用户错误。
+调试信息。这些信息帮助你调试程序，例如，你可以在一个类 初始化的地方记录下来作为调试信息。
+一般信息。这些是最低级别的信息，简单的给出程序运行过程中的一些信息。
+
+
+注解
+为了保证日志文件被正确写入，logs/ 目录必须设置为可写的。 此外，你必须要设置 application/config/config.php 文件中的 "threshold" 参数，举个例子，例如你只想记录错误信息，而不想 记录另外两种类型的信息，可以通过这个参数来控制。如果你将 该参数设置为 0 ，日志就相当于被禁用了。
+

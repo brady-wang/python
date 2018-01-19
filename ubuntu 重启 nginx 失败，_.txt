@@ -1,0 +1,49 @@
+ubuntu 重启 nginx 失败，* Restarting nginx nginx ...fail!
+ 
+ubuntu 重启 nginx 失败，* Restarting nginx nginx ...fail!
+
+
+ 
+
+ 
+ 
+
+
+执行 nginx 重启服务时，提示失败如下：
+$ sudo service nginx restart 
+ * Restarting nginx nginx
+   ...fail!
+
+1
+2
+3
+
+
+1
+2
+3
+
+原因是你配置 nginx 的配置文件出了错误
+查找错误，处理方法：
+ $ sudo nginx -t
+ nginx: [emerg] "location" directive is not allowed
+ here in /etc/nginx/nginx.conf:11
+ nginx: configuration file /etc/nginx/nginx.conf
+ test failed
+
+1
+2
+3
+4
+5
+
+
+1
+2
+3
+4
+5
+
+根据错误信息，修改对应生的配置文件即可。
+
+

@@ -1,0 +1,18 @@
+python3 保存一个网页为html文件
+我使用的python版本为3.5.2.
+最近租房子，恨透了中介，想绕过中介去租。结果发现豆瓣同城里有好多二房东，感觉人都还不错。但是豆瓣这里没有信息检索的功能，只能人工地看房子的地址，非常地不方便。所以我想做一个程序，它具有的功能，第一可以获取每条租房信息的房间地址，第二可以计算出该地址与我公司的路线距离（不是直线距离，是步行要走的距离）。
+所以第一个任务就是学习python爬虫。在搜了多方资料之后，我终于写了这个例子。该例子的功能为访问一个网址，保存它为html文件。这里需要注意的是好多网站会抵制爬虫的访问，会对你进行鉴别，判断你是不是通过浏览器访问的。所以本例访问了www.baidu.com,经测试，该网址可以通过这个例子来访问。
+代码如下，pachong.py：
+ 
+
+
+
+import urllib.requestdef getHtml(url):    request = urllib.request.Request(url)    response = urllib.request.urlopen(request)    html = response.read()    return htmldef saveHtml(file_name,file_content):    with open(file_name.replace('/','_')+'.html','wb') as f:        f.write(file_content)html = getHtml("http://www.baidu.com")saveHtml("test",html)print("结束")
+
+
+
+运行结果是在pachong.py同级目录下生成一个text1.html文件用浏览器打开，就可以看到了。不过有的地方显示不出来。
+程序主要有两个函数，第一个getHtml(url)  功能为打开一个url网络链接，把链接的内容读取出来，存在html变量里；第二个saveHtml(file_name,file_content)  功能为打开一个名为 file_name 的文件，把网页内容写进去。
+调用起来也很简单。
+参考引用：
+1. shihui512 ，Python3爬虫之爬取某一路径的所有html文件  2016/4/8 http://m.blog.csdn.net/article/details?id=51100605

@@ -1,0 +1,2 @@
+同库 不同表更新
+UPDATE cjw.cjw_regionINNER JOIN cjw_bak_1008.cjw_region ON cjw_bak_1008.cjw_region.region_id = cjw.cjw_region.region_idSET cjw.cjw_region.area_code = cjw_bak_1008.cjw_region.area_code;

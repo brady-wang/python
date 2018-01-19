@@ -1,0 +1,16 @@
+php 不重新编译增加openssl扩展
+安装openssl和开发包
+yum install openssl openssl-devel
+跳转到PHP源码下的openssl
+cd /usr/local/src/php-5.5.27/ext/openssl/
+改文件名
+cp config0.m4  config.m4
+执行phpize
+/usr/local/php/bin/phpize
+make编译安装
+ ./configure --with-php-config=/usr/local/php/bin/php-config
+make
+make install
+修改php.ini
+extension=openssl.so
+ 

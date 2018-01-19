@@ -1,0 +1,21 @@
+按Backspace键删除时，会出现^H
+ 
+按Backspace键删除时，会出现^H
+
+
+2014-08-12 19:38 1180人阅读 评论(0) 举报
+
+
+版权声明：本文为博主原创文章，未经博主允许不得转载。
+
+
+在linux/unix 平台的经常使用scanf从键盘获取字符，输出字符后按Backspace键删除时，会出现^H，这对习惯了按Backspace键删除的用户来说，感觉非常别扭，虽然可以通过Ctrl+Backspace组合键实现删除功能可通过stty命令修改终端配置来实现Backspace删除功能。如下：
+　　QUOTE:
+　　[oracle@RHEL5 ~]$ id
+　　uid=501(oracle) gid=501(oinstall) groups=501(oinstall),502(dba),503(asadmin)
+　　[oracle@RHEL5 ~]$ stty erase ^h
+　　若要恢复Ctrl+Backspace组合键删除功能，可执行以下命令：
+　　QUOTE:
+　　[oracle@RHEL5 ~]$ id
+　　uid=501(oracle) gid=501(oinstall) groups=501(oinstall),502(dba),503(asadmin) [oracle@RHEL5 ~]$ stty erase ^?
+

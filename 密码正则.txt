@@ -1,0 +1,2 @@
+密码正则
+if (!preg_match('/^(\d|[a-zA-Z]|[!@#$%^&*\.]){6,18}$/', $password)){            throw new Exception($errorCode ? $errorCode: '10201005');        }

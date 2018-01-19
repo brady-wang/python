@@ -1,0 +1,10 @@
+检验php用时
+<?php// 实例1
+/** * @start time */function proStartTime() {    global $startTime;    $mtime1 = explode(" ", microtime());    $startTime = $mtime1[1] + $mtime1[0];}
+/** * @End time */function proEndTime() {    global $startTime,$set;    $mtime2 = explode(" ", microtime());    $endtime = $mtime2[1] + $mtime2[0];    $totaltime = ($endtime - $startTime);    $totaltime = number_format($totaltime, 7);    echo "<br/>process time: ".$totaltime;}
+// 程序调用开始记时proStartTime();
+sleep(1);     // sleep() 延时代码执行若干秒proEndTime(); // 程序在每一段所消耗的执行时间sleep(2);proEndTime();sleep(3);proEndTime(); 
+/************************************************* 华丽的分割线 **************************************************/
+// 实例2
+$t1 = microtime(true);sleep(3);$t2 = microtime(true);echo '程序耗时'.round($t2-$t1,3).'秒';
+?>

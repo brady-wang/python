@@ -1,0 +1,36 @@
+ECSHOP手机号码或邮箱用户名都可以登录方法
+ECSHOP手机号码或邮箱用户名都可以登录方法
+ECSHOP教程 / ecshop 教程网(www.ecshop119.com) 2013-06-30
+ 
+
+
+有不少人都在找支持ECShop用户名、邮箱或手号码登录的插件，下面就讲一下如何实现用户名、邮箱或手机号码登录ECShop。
+　　找到user.php 的以下代码：
+if (empty($_POST['captcha']))
+{
+show_message($_LANG['invalid_captcha'], $_LANG['relogin_lnk'], 'user.php', 'error');
+}
+
+　　后面增加：
+if(is_email($username))
+{
+$sql ="select user_name from ".$ecs->table('users')." where email='".$username."'";
+$username_e = $db->getOne($sql);
+if($username_e) $username=$username_e;
+}
+if(is_telephone($username))
+{
+$sql ="select user_name from ".$ecs->table('users')." where mobile_phone='".$username."'";
+$username_e = $db->getOne($sql);
+if($username_e) $username=$username_e;
+}
+
+　　然后在user.php的最底部添加：
+function is_telephone($phone){
+$chars = "/^13[0-9]{1}[0-9]{8}$|15[0-9]{1}[0-9]{8}$|18[0-9]{1}[0-9]{8}$/";
+if (preg_match($chars, $phone)){
+return true;
+}
+}
+
+

@@ -1,0 +1,38 @@
+layer 体验
+做后端的，前端一直不擅长，提示语以前也只会alert，非常难看，后来在别人代码看到lay.msg（）
+https://pan.baidu.com/s/1eRHH59g
+ 
+
+<!DOCTYPE html>
+<html lang="zh-cn">
+  <head>
+    <meta charset="utf-8">
+    <script src="http://cdn.bootcss.com/jquery/1.11.1/jquery.min.js"></script>
+    <script type="text/javascript" src = "layer/layer.js"></script>
+  </head>
+  <body>
+  	<button id='test'>点击</button>
+    <script type="text/javascript">
+      //在这里面输入任何合法的js语句
+      $("#test").click(function(){
+      	layer.open({
+		  type: 1 //Page层类型
+		  ,area: ['500px', '300px']
+		  ,title: '你好，layer。'
+		  ,shade: 0.6 //遮罩透明度
+		  ,maxmin: true //允许全屏最小化
+		  ,anim: -1 //0-6的动画形式，-1不开启
+		  ,content: '<div style="padding:50px;">这是一个非常普通的页面层，传入了自定义的html</div>'
+		});  
+      })
+		  
+		  
+    </script>
+
+  </body>
+</html>
+
+
+　　
+
+ 

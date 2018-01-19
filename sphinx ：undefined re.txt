@@ -1,0 +1,38 @@
+sphinx ：undefined reference to `libiconv' 报错解决办法
+sphinx ：undefined reference to `libiconv' 报错解决办法
+ 
+2013-11-30 21:45:39
+安装sphinx时不停报错。。。郁闷在make时报错，错误内容：r local src sphinx sphinx-0 9 8-rc2 src tokenizer_zhcn cpp:280: undefined
+
+安装sphinx时不停报错。。。郁闷
+在make时报错，错误内容：
+r/local/src/sphinx/sphinx-0.9.8-rc2/src/tokenizer_zhcn.cpp:280: undefined reference to `libiconv'
+libsphinx.a(tokenizer_zhcn.o)(.text+0x6fd):/usr/local/src/sphinx/sphinx-0.9.8-rc2/src/tokenizer_zhcn.cpp:55: undefined reference to
+ 
+`libiconv_open'
+libsphinx.a(tokenizer_zhcn.o)(.text+0x719):/usr/local/src/sphinx/sphinx-0.9.8-rc2/src/tokenizer_zhcn.cpp:58: undefined reference to
+ 
+`libiconv'
+libsphinx.a(tokenizer_zhcn.o)(.text+0x7a4): In function `CSphTokenizer_zh_CN_UTF8::~CSphTokenizer_zh_CN_UTF8()':
+/usr/local/src/sphinx/sphinx-0.9.8-rc2/src/tokenizer_zhcn.cpp:34: undefined reference to `libiconv_close'
+libsphinx.a(tokenizer_zhcn.o)(.text+0xd04): In function `CSphTokenizer_zh_CN_UTF8::~CSphTokenizer_zh_CN_UTF8()':
+/usr/local/src/sphinx/sphinx-0.9.8-rc2/src/tokenizer_zhcn.cpp:34: undefined reference to `libiconv_close'
+libsphinx.a(tokenizer_zhcn.o)(.text+0x125c): In function `CSphTokenizer_zh_CN_UTF8::~CSphTokenizer_zh_CN_UTF8()':
+/usr/local/src/sphinx/sphinx-0.9.8-rc2/src/tokenizer_zhcn.cpp:34: undefined reference to `libiconv_close'
+ 
+解决
+一开始以为libiconv的问题，所以安装了libiconv，又重装了几次还是报错。
+最后终于在官网的论坛上找着办法了。
+编辑：
+./src/MakeFile文件
+将
+LIBS = -lm -lexpat -L/usr/local/lib
+改成
+LIBS = -lm -lexpat -liconv -L/usr/local/lib
+ 
+然后再次make
+make install
+这次没问题了。
+libiconv 这个库真是。。。唉，安装php的时候也是经常因为它出错。最后告诉大家在修改了上面的配置后，对sphinx的使用没有任何影响。
+ 
+

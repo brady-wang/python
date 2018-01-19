@@ -1,0 +1,14 @@
+memcache 开发版
+memcache安装，如果是用xampp，一定要下载开发版本 
+解压开发包，将其中的include目录复制到应用的lampp目录下
+ 
+tar -zxvf xampp-linux-devel-1.7.2.tar.gz
+cp ./lampp/include /opt/lampp/ -R
+7， 修改Php配置文件，启用Memcache
+ 
+vi /opt/lampp/etc/php.ini
+//找到Dynamic Extensions的位置，添加一行：extension=”memcache.so”
+8, 重启Lampp
+ 
+/opt/lampp/lampp restart
+这时，使用phpinfo脚本查看时，会发现memcache的配置段，说明安装成功！

@@ -1,0 +1,57 @@
+MySQL缺失mysql_config文件
+
+打算爬虫,安装mysqldb 结果使用pip安装出错
+ 
+在centos-6.4上pip install mysql-python，报错如下[sentry@kjtest111 mysql-python]$ pip install mysql-python
+Downloading/unpacking mysql-python
+Running setup.py egg_info for package mysql-python
+sh: /usr/bin/mysql_config: No such file or directory
+Traceback (most recent call last):
+File "<string>", line 16, in <module>
+File "/tmp/pip-build-sentry/mysql-python/setup.py", line 18, in <module>
+metadata, options = get_config()
+File "setup_posix.py", line 43, in get_config
+libs = mysql_config("libs_r")
+File "setup_posix.py", line 25, in mysql_config
+raise EnvironmentError("%s not found" % (mysql_config.path,))
+EnvironmentError: /usr/bin/mysql_config not found
+Complete output from command python setup.py egg_info:
+sh: /usr/bin/mysql_config: No such file or directory
+Traceback (most recent call last):
+File "<string>", line 16, in <module>
+File "/tmp/pip-build-sentry/mysql-python/setup.py", line 18, in <module>
+metadata, options = get_config()
+File "setup_posix.py", line 43, in get_config
+libs = mysql_config("libs_r")
+File "setup_posix.py", line 25, in mysql_config
+raise EnvironmentError("%s not found" % (mysql_config.path,))
+EnvironmentError: mysql_config not found
+----------------------------------------
+
+工作环境：centOS6.4
+解决方法：1.  通过报错信息看出是缺少mysql_config，在/usr/bin/下面应该有的mysql_config文件没有，网上的解决方案都是apt-get install libmysqlclient-dev，但是apt-get是Debian、Ubuntu系列的网络安装命令，yum是Redhat、Centos、Fedora是网络安装命令，接着发现Centos上应该安装mysql-devel
+2.  yum install mysql-devel，发现有冲突，报错如下：
+
+--> Running transaction check
+---> Package mysql-devel.x86_64 0:5.1.69-1.el6_4 will be installed
+--> Processing Dependency: mysql = 5.1.69-1.el6_4 for package: mysql-devel-5.1.69-1.el6_4.x86_64
+--> Running transaction check
+---> Package mysql.x86_64 0:5.1.69-1.el6_4 will be installed
+--> Processing Conflict: MySQL-client-5.5.30-1.el6.x86_64 conflicts mysql
+--> Processing Conflict: MySQL-server-5.5.30-1.el6.x86_64 conflicts mysql
+--> Processing Conflict: mysql-5.1.69-1.el6_4.x86_64 conflicts MySQL
+--> Finished Dependency Resolution
+Error: mysql conflicts with MySQL-devel-5.5.30-1.el6.x86_64
+You could try using --skip-broken to work around the problem
+You could try running: rpm -Va --nofiles --nodigest
+
+
+3.  使用 rpm -qa|grep mysql查看mysql的安装情况
+mysql-devel-5.5.16-1.el6_4.x86_64
+mysql-client-5.5.16-1.el6_4.x86_64
+mysql-server-5.5.16-1.el6_4.x86_64
+
+4.  使用rpm -e mysql-devel-5.5.16-1.el6_4.x86_64移除已有的安装包
+5.  再次使用yum install mysql-devel 发现和mysql-server， mysql-client的版本有冲突
+6.  去网上寻找相同的版本下载http://downloads.skysql.com/archive/index/p/mysql/v/5.5.16，下载64bit的rpm文件，使用rpm -ivh MySQL-devel-5.5.16-1.linux2.6.x86_64.rpm安装
+7.  安装成功后，去/usr/bin/目录下，发现生成了mysql_config文件，继续pip install mysql-python，顺利完成。

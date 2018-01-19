@@ -1,0 +1,22 @@
+$(document).ready(function(){  })
+$(document).ready(function(){
+})
+延迟加载，等待dom结构加载完成 再执行js代码
+简写为 $(function(){
+alert(1)
+})
+$(function(){
+alert(2)
+})
+可以多次执行 
+window.onload只能执行一次 还要等大图片等加载完成才执行
+ 
+可以连缀执行
+$("div").css("color","red").css("font-size","12px");
+ 
+jquery对象 object object 转换为dom对象
+$("#div").get(0);
+object htmldom
+原生对象转换为jquery对象 
+$(document.getElementById("id"))
+ 

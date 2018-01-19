@@ -1,0 +1,22 @@
+第一部分 mongodb 基础篇
+什么是NoSQL认识MongoDBMongDB的下载与安装MongoDB的体系结构常用命令(基本的增删改查)客户端GUI工具集合
+一: 什么是NoSql1 NoSQL简介NoSQL是Not Only SQL的缩写，它指的是非关系型的数据库，是以key-value形式存储，和传统的关 系型数据库不一样，不一定遵循传统数据库的一些基本要求，比如说遵循SQL标准，ACID属性，表结构等等，这类数据主要有以下特点，非关系型的，分布式的，开源的，水平可扩展的
+2 NoSQL发展现状目前国内外正在应用的NoSQL的网站有:新浪微博 RedisGoogle Bigtable视觉中国网站 MongoDB优酷运营数据库分析 MongoDB飞信空间 HandlerSocket等等....
+3 为什么要用NoSQL随着互联网的不断发展，各种类型的应用层出不穷，所以导致在这个云计算的时代，对技术提出了 更多的需求，虽然关系型数据库已经在业界的数据存储方面占据不可动摇的地位，但是由于其天生的 几个限制，使其很难满足上面这几个需求，扩展困难，读写慢，成本高，有限的支持容量，但是 NoSQL关注的是对数据高并发地读写和对海量数据的存储等，与关系型数据库相比，它们在架构和数据库模型方面做了"减法",而在扩展和并发等方面做了"加法"
+4 NoSQL数据库的优缺点在优势方面，主要体现在下面这几点:简单的扩展快速的读写低廉的成本灵活的数据模型在不足方面不提供对SQL的支持支持的特性不够丰富现有产品的不够成熟
+ 
+二 认识MongoDB1 MongoDB简介MongoDB是一个介于关系数据库和非关系数据库之间的产品，是非关系数据库当中功能最丰富，最 像关系数据库的，语法有点类拟于Javascript面向对象的查询，它是一个面向集合的，模式自由的文 档型数据库
+面向集合(Collenction-Orented)意思是数据库被分组存储集中被称为一个集合(Collention),毎个集合在数据库中都有一个唯一的 标识名，并且可以包含无限数目的文档，集合的概念类似关系型数据里的表，不同的是它不需要定义 任何模式模式自由(scheman-free)意思是集合里面没有列和行的概念，下面两个记录可以存在于同一个集合里面{"name":"mongo"}{"age":25}
+文档型(documents)意思是我们存储的数据是键-值的集合，键是字符串，值可以是数据类型集合里的任意类型，包括 数组和文档，每一个文档相当于关系数据库中的一条记录
+2 MongoDB特性MongoDB的特点是高性能，易部署，易使用，存储数据库非常方便,主要特性有面向集合存储，易于存储对象类的数据模式自由支持动态查询支持完全索引，包含内部对象支持复制和故障恢复使用高效的二进制数据存储，包括大型对象(如视频等)自动处理碎片，以支持云计算层次的扩展性文件存储格式了BSON(一种JSON的扩展)
+适用场景持入化缓存层层高效的实时性用于对象及JSON数据的存储高伸缩性的场景大尺寸，低价值的数据存储
+不适合的场景要求高度事务性的系统传统的商业智能应用复杂多表查询
+三 MongDB的下载与安装(Linux平台)第一步: 下载MongoDB安装包MongoDB的官网: http://www.mongodb.org找到相应的版本下载如果有网络的话，用命令直接下载wget http://fastdl.mongodb.org/linux/mongodb-linux-i686-2.2.2.tgz第二步: 解压压缩文件tar zxvf mongodb-linux-i686-2.2.2.tgz第三步: 安装准备将mongodb移动到/usr/local/mongodb文件夹mv mongodb /usr/local/mongodb创建数据库文件夹(默认的数据库文件的位置是/data/db,启动时自动创建)
+mkdir /usr/local/mongodb/data提示: mongoDB没有具体的安装过程，解压文件包后，可以直接使用，非常高效和方便touch /usr/local/mongodb/dblogs#日志文件第四步: 开机启动将mongodb启动项目加入rc.local保证mongodb在服务器开机时启动echo "/usr/local/mongodb/bin/mongod --dbpath=/usr/local/mongodb/data" >> /etc/rc.local第五步: 启动mongodb运行mongod命令/usr/local/mongodb/bin/mongod --dbpath=/usr/local/mongodb/data -- logpath=/usr/local/mongodb/dblogs --fork--dbpath执行数据库存放路径(默认是/data/db)--fork是以Daemon(进程)方式运行注意: 如果指定--fork参数，必须指定--logpath日志文件路径
+/usr/local/mongodb/bin/mongod --dbpath=/usr/local/mongodb/data -- logpath=/usr/local/mongodb/dblogs --fork启动命令常用叁数选项说明--dbpath 指定数据库的目录--port 指定数据库的端口，默认是27017--bind_ip 绑定IP--directoryperdb为每个db创建一个独立的子目录--logpath--logappend指定日志生成方式(追加/覆盖)--pidfilepath 指定进程文件路径，如果不能指定，将不产生进程文件--keyFile 集群模式的关键标识--journal 启动日志--nssize 指定.ns文件的大小,单位MB,默认是16M, 最大是2GB--maxConns最大的并发连接数--notablescan 不允许进行表扫描--noprealloc 关闭数据库文件的预分配功能第六步: 进入客户端操作/usr/local/mongodb/bin/mongo第七步: 退出exit;
+第八步: 停止MongoDB服务器如果处理连接状态，那么直接可以通过在admin库中发送db.shutdownServer()指令停止
+Unix系统指令killall mongod注意: 不要用kill -9 PID来杀死MongoDB进程，这样会导致MongoDB的数据库损坏，用kill -2 杀 死进程
+四 MongoDB的体系结构1 逻辑结构关系对比mysql数据(database) table rows 三个层次组成非关系型数据库MongoDB数据库(database) 集合(collection), 文档对象(docuemnt)三个层MongoDB里的集合对应于关系型数据库中的表，但是集合中没有列，行和关系，集合中只有文档 ，一个文档就相当与一条记录，这体现了模式自由的特点show dbs; 查看数据库列表db; 查看当前数据库show tables; 查看当前集合
+2 数据存储结构Mysql的数据库结构mysql的每个数据库存放在一个与数据同名的文件夹中，mysql如果使用MyISAM存储引擎，数 据库文件类型包括.frm, MYD, MYIMongoDB的灵敏据结构MongoDB的默认数据目录是/data/db 它负责存储所有的MongoDB的数据文件，在MongoDB内部 ，每个数据库包含一个.ns文件和一些数据文件，而且这些数据文件会随着数据量拉加页变得越来越 大多，所以如果系统中有一个叫做mydb的数据库，那么构成mydb这个数据库的文件主举动由mydb.ns, mydb.0, mydb.1等等组成
+3　MongoDB数据类型MongoDB的文档使用BSON(Binary JSON)来组织数据，BSON类似于JSON, JSON只是一种简单的表示 数据的方式，只包含了站种数据类型(null, 布尔，数字，字符串，数组及对象),不能完全满足复杂 的业务的需要，因此,BSON还提供日期，32位数字，64位数字等类型，以下是对mongoDB的数据类型进 行简要说明1 nullnull类型用于表示空值或不存在的字段如: {"one":null}2 布尔类型 tru false3 32位整数 mongoDB的控制台使用js引擎进行输入，而JS仅支持64位浮点数，所以32位整 数将会被自动转义4 64位整数5 64位浮点数6 字符串7 符号8 ObjectId类型9 日期10 正则表达式11 代码 文档中可以包含JS代码12 数组13 内嵌文档
+五 常用命令(基本的增删改查)控制台中的基本操作命令如果想查看当前连接哪里个数据库下面，可以直接输入db查看用户列表db.system.users.find();查看所有用户show users;查看所有数据库show dbs;查看所有集合 show collections删除当前的数据库 db.dropDatabase();删除collection db.集合名.drop();想知道当前数据库支持哪里些命令，可以直接输入help想知道当前数据库支持哪里些方法: db.help();想知道当前集合支持哪里些方法: db.user.help()， user为集合名创建数据库，集合由于MongoDB不是关系型数据库文件，实际上，它并不存在传统关系型数据库中所谓"数据库"的 说法，当你第一次新增数据时，MongoDB就会以collection集合的形式进行保存和新建，而不需要提 前去建立

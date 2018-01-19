@@ -1,0 +1,8 @@
+解决git pull 命令失效，不能从远程服务器上拉取代码问题
+用时候在用Git pull命令的时候不管用，拉取不下来远程分支上的代码，是因为本地分支和远程分支没有建立关联。
+
+处理这种问题很简单就按照提示执行命令即可：git branch --set-upstream-to=origin/fixbug-2.9.8 fixbug-2.9.8 
+ 
+如果想保证这种情况不出现就在建立新分支推送到远程分支上的时候加上-u参数即可
+git push -u origin feature-
+解决git pull 命令失效，不能从远程服务器上拉取代码问题

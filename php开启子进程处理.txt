@@ -1,0 +1,34 @@
+php开启子进程处理
+
+$pageNum = ceil($totalNum/$pageSize);
+for($page=1;$page<=$pageNum;$page++){
+    $this->o_pcntl->tps_pcntl_wait('$this->o_cron->doNewMemberSharPage(\''.$page.'\',\''.$pageSize.'\');');//用子进程处理每一页
+}
+
+
+<?php
+
+class o_pcntl extends CI_Model {
+
+    function __construct() {
+        parent::__construct();
+    }
+
+    public function tps_pcntl_wait($childProcessCode){
+
+        $pid = pcntl_fork();
+        if($pid>0){
+
+            pcntl_wait($status);
+            @$this->db->reconnect();
+        }elseif($pid==0){
+
+            eval($childProcessCode);
+            exit;
+        }else{
+            die('Cannot fork.');
+        }
+    }
+}
+
+ 

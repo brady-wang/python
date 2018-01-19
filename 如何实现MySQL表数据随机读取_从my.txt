@@ -1,0 +1,12 @@
+如何实现MySQL表数据随机读取?从mysql表中读取随机数据
+文章转自 http://blog.efbase.org/2006/10/16/244/如何实现MySQL表数据随机读取?从mysql表中读取随机数据?以前在群里讨论过这个问题,比较的有意思.mysql的语法真好玩.他们原来都想用PHP的实现随机,但取出多条好像要进行两次以上查询.翻了手册,找到了下面这个语句,可以完成任务了。
+SELECT * FROM table_name ORDER BY rand() LIMIT 5;
+　　rand在手册里是这么说的:
+　　RAND() ，RAND(N) ：返回在范围0到1.0内的随机浮点值。如果一个整数参数N被指定，它被用作种子值。
+　　mysql> select RAND();　　-> 0.5925　　mysql> select RAND(20);　　-> 0.1811　　mysql> select RAND(20);　　-> 0.1811　　mysql> select RAND();　　-> 0.2079　　mysql> select RAND();　　-> 0.7888
+　　你不能在一个ORDER BY子句用RAND()值使用列，因为ORDER BY将重复计算列多次。然而在MySQL3.23中，你可以做：
+SELECT * FROM table_name ORDER BY RAND()，这是有利于得到一个来自SELECT * FROM table1,table2 WHERE a=b AND c　
+　　但我试了一下,8千条记录的表,执行一次需要0.08 sec,.慢了些
+　　 　　后来请教了google,得到如下代码
+　　SELECT *　　FROM table_name AS r1 JOIN　　(SELECT ROUND(RAND() *　　(SELECT MAX(id)　　FROM table_name)) AS id)　　AS r2　　WHERE r1.id >= r2.id　　ORDER BY r1.id ASC　　LIMIT 5;
+    执行效率需要0.02 sec.可惜的是,只有mysql 4.1.*以上才支持这样的子查询.

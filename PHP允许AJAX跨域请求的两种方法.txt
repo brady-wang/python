@@ -1,0 +1,51 @@
+PHP允许AJAX跨域请求的两种方法
+*
+一. 服务端设置 header 头允许AJAX跨域
+** 代码如下:
+// 允许 ityangs.net 发起的跨域请求
+header("Access-Control-Allow-Origin: ityangs.net"); 
+
+//如果需要设置允许所有域名发起的跨域请求，可以使用通配符 *
+header("Access-Control-Allow-Origin: *");
+ 
+ 
+二. 允许jsonp跨域
+**
+
+有些网站处于安全考虑, 不会设置允许跨域, 而我们又刚好会用到一次跨域请求, 那么, jsonp就派上用场了:
+
+<?php
+// 设定js定义的方法 (如: js的 users() 方法)
+$jsonp = 'users';
+
+// 需要获取的数据
+$data = array('id'=>1, 'name'=>'ityangs');
+
+// 转换为json
+$dataToJson = json_encode($data);
+ 
+// 输出
+echo $jsonp.'('.$dataToJson.')';
+ 
+我们来看一下输出结果
+'users({'id': 1, 'name': 'ityangs'})'
+ 
+我们把它格式化一下
+users ({
+    'id': 1, 
+    'name': 'ityangs'
+})
+ 
+ 
+ 
+没错, 这是一个标准的 js 函数, 于是乎, 我们只需要定义一个json函数就可以了:
+<script type="text/javascript">
+function users(res)
+{
+  var id= res.id;
+  var name = res.name
+}
+</script>
+ 
+ 
+我们只需要在 ajax 请求对应的php的api连接地址就可以了, 然后一次处理数据, OK!! ~~~ 可是, 这也意味着不安全, 所以, 我们还是要根据实际情况, 选择适合的使用

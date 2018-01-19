@@ -1,0 +1,38 @@
+Sublime Text添加插入带当前时间说明
+Sublime Text添加插入带当前时间说明
+ 
+
+
+作者：木尘 日期：2014-11-25
+插件实现插入带时间功能的说明：
+1. 创建插件：
+Tools → New Plugin:
+import datetime
+import sublime_plugin
+class AddInfoCommand(sublime_plugin.TextCommand):
+  def run(self, edit):
+    self.view.run_command("insert_snippet",
+      {
+        "contents": "/**""\n"
+        " * @Author:	  name""\n"
+        " * @DateTime:	"  "%s"  %datetime.datetime.now().strftime("%Y-%m-%d %H:%M:%S") +"\n"
+        " * @Description: Description""\n"
+        " */"
+      }
+    )
+保存为Sublime Text 2\Packages\User\ addInfo.py
+2. 创建快捷键：
+Preference → Key Bindings - User:
+[
+    {
+        "command": "add_info",
+        "keys": [
+            "ctrl+shift+,"
+        ]
+    }
+]
+3. 此时使用快捷键 ctrl+shift+, 即可在当前光标处插入当前时间，如下：
+ 
+ 
+
+

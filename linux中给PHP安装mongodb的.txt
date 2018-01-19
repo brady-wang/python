@@ -1,0 +1,52 @@
+linux中给PHP安装mongodb的扩展
+
+ 
+
+
+　　centos5.6 32bit
+　　php 5.2.17
+　　php安装路径 /usr/local/php
+　　phpize路径 /usr/bin
+　　php-config路径 /usr/bin
+　　php.ini路径 /etc/
+　　1.首先下载php的mongodb扩展
+　　从http://pecl.php.net/package/mongo这个网址下载mongodb的扩展源码包
+　　wget http://pecl.php.net/get/mongo-1.4.5.tgz
+　　2.解压安装包
+　　tar zxf mongo-1.4.5.tgz
+　　3.进入解压目录，运行phpize进行安装准备
+　　cd mongo-1.4.5
+　　/usr/local/php/bin/phpize
+　　4.安装编译
+　　上述命令运行完后，在目录下就生成了configure文件
+　　使用./configure命令进行安装配置，然后使用make && make install进行编译安装，命令如下：
+　　./configure --with-php-config=/usr/local/php/bin/php-config
+　　make && make install
+　　5.编辑php.ini增加下述一行添加mongodb扩展
+　　extension=mongo.so
+　　重启web容器，然后查看phpinfo，看到mongodb的内容就说明安装成功。
+　　例子
+　　服务器环境Cent OS 5.6 32位, php版本 5.2.17编译安装，安装路径/usr/local/php
+　　首先下载最新的php mongodb扩展源码，源码可以在http://pecl.php.net/package/mongo下载到
+　　wget http://pecl.php.net/get/mongo-1.2.0.tgz
+　　tar zxf http://pecl.php.net/get/mongo-1.2.0.tgz
+　　cd mongo-1.2.0
+　　进入文件夹后，首先运行phpize来准备编译扩展的环境，phpize这个程序的介绍在这里
+　　/usr/local/php/bin/phpize
+　　运行后执行结果如下：
+
+　　运行后，./configure 脚本就会生成了，这个时候我们运行./configure脚本来进行配置
+　　./configure --with-php-config=/usr/local/php/bin/php-config
+　　--with-php-config这个参数是告诉配置脚本php-config这个程序的路径,php-config的介绍在这里
+　　上面命令在正确配置的环境下运行结果如下
+
+　　这时用make来编译扩展
+　　make && make install
+　　正确编译执行结果如下(下图是编译输出的最后几行)
+
+　　完成后，请编辑你php.ini文件增加一行
+　　extension=mongo.so
+　　一般默认的编译php的ini文件在
+　　/usr/local/php/etc/php.ini
+　　重启你的web服务器或者php-fpm，打印phpinfo，如果看到下列内容那么恭喜你，mongodb的扩展安装成功了
+

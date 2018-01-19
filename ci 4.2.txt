@@ -1,0 +1,20 @@
+ci 4.2
+超级对象 
+$this 
+当前的控制器对象 有很多属性
+$this->load    装载器类的实例在systme/core/loader.php  里面有view方法
+$obj = new CI_Loader();
+$this->load = $obj 
+$this->load->view() 
+vars()
+database()装载数据库对象 
+model（）装载模型对象 
+helper()加载帮助
+ci里面pathinfo不起作用
+ 
+$this->uri->segment(4)
+index.php/user/index/5/6
+system/core/input.php 
+$this->input->post('username')
+$this->input->server(“DOCUMENT_ROOT”)等价 $_SERVER
+ 

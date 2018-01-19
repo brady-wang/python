@@ -1,0 +1,20 @@
+centOS下yum安装配置samba
+
+
+ centOS下yum安装配置samba
+
+2010-03-29 15:46:00
+标签：samba yum centOS 安装 休闲
+
+注意：本文的原则是只将文件共享应用于内网服务器，并让将要被共享的目录拥有充分的读写权限属性，读者可顺着本文的思路完成基本配置流程，如需复杂读写权限功能请自行询问百度大哥。
+1、# yum -y install samba 使用yum命令安装samba，加入-y参数，如遇询问自动选择y，全自动下载并安装samba，此过程需要一点时间。
+2、# rpm -qa | grep samba 检查samba服务包的安装情况，会显示类似如下两个包：samba-common-3.0.33-3.7.el5_3.1    //服务器和客户端均需要的文件samba-3.0.33-3.7.el5_3.1                 //服务器端文件
+3、# whereis samba 由于是yum安装，可以用此命令查看samba安装位置，得到类似如下内容：samba: /etc/samba /usr/lib/samba /usr/share/samba /usr/share/man/man7/samba.7.gz
+4、# vi /etc/samba/smb.conf 根据步骤3得知smb.conf的位置，配置samba：（1）[global]        找到全局设置标签，在下面进行配置workgroup = MYGROUP       找到此行，改为workgroup = WORKGROUP，这里以 Windows XP 默认的“WORKGROUP”为例; hosts allow = 192.168.1. 192.168.2. 127.       找到此行，去掉行首的“;”，并制定访问限制改为hosts allow = 192.168.0. 127.，指定内网IP地址及本地，只允许这两种情况的访问（2）配置最简单访问目录几个基本属性：[share]       windows客户端查看时看到的文件夹名 path = /var/samba/share       共享目录位置，要系统中存在的目录，也可以配置完再创建read only = nopublic   = yes
+5、给配置的共享目录设置权限：# mkdir /var/samba/share       如刚才配置的共享目录不存在则创建 # chown -R nobody. /var/samba/share       设置共享目录归属为 nobody # chmod 777 /var/samba/share       将共享目录属性设置为 777
+6、# smbpasswd -a username        将linux系统已存在用户 username（例）加入到 Samba 用户数据库，windows访问samba共享目录时需要输入此用户名和密码 New SMB password:       在此输入密码Retype new SMB password:       重复密码
+7、# service smb start由于是yum安装可用此命令启动samba，若想开机自启动samba服务，请参考此文章http://hi.baidu.com/linglongwunv/blog/item/be4009c5dda5eda08326ac21.html
+8、若启动成功，最简单的适合内网使用的samba已配置好。卸载samba请参考此文章http://hi.baidu.com/linglongwunv/blog/item/3770cff4266c742cbc310993.html
+9、从Windows 客户端连接到Samba 服务器，即 客户端使用samba的方法可参考此文章http://hi.baidu.com/linglongwunv/blog/item/9f1c348924387d9da4c27208.html
+ 
+

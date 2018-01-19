@@ -1,0 +1,2 @@
+动态看linux时间
+watch -n 1 "date +%T"

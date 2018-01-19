@@ -1,0 +1,24 @@
+Ubuntu下找不到php5,phpize等可执行程序的解决办法
+
+Ubuntu下找不到php5,phpize等可执行程序的解决办法
+
+
+
+
+[日期：2010-10-25]
+来源：eetag.com  作者：eetag
+[字体：大 中 小]
+
+
+
+ 
+
+ 
+环境：Linux Ubuntu 2.6.27-7-server + Apache/2.2.9 (Ubuntu) + PHP/5.2.6-2ubuntu4.6 with Suhosin-Patch
+1> 一直使用源码编译安装PHP，今天在Ubuntu下图省事直接使用apt-get install php5 命令安装完php5，安装完后却一直找不到php5执行程序，使用find命令也找不到。后来发现还需要另安装一个程序：apt-get install php5-cli
+
+安装完之后可以看到在/usr/bin里面有php5啦！
+
+2> 用C开发PHP扩展的时候如果用动态链接库的方式编译扩展模块，需要用到phpize,这个工具在使用apt-get install php5默认情况也是没安装的，安装phpize: apt-get install php5-dev
+
+

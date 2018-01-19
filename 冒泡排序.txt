@@ -1,0 +1,87 @@
+冒泡排序
+
+<?php
+/**
+ * Created by PhpStorm.
+ * User: brady.wang
+ * Date: 2017/11/10
+ * Time: 9:45
+ */
+
+function insertSort($arr) {
+    $len=count($arr);
+    for($i = 1 ;$i<$len;$i++) {
+        $temp = $arr[$i];// $tmp = 3;  2
+        for($j = $i - 1;$j >=0; $j-- ) {  //1 0  3 88 2 5 4 3 66 0
+            if($temp < $arr[$j]){ // 3 < 88  2<88
+                $arr[$j+1] = $arr[$j];  //把当前的值放到后面一个上面，
+                $arr[$j] = $temp; //把插入的值插入给当前位置
+            }
+        }
+        echo "<hr>";
+        echo "<pre>";
+        print_r($arr);
+        echo "</pre>";
+
+    }
+
+    return $arr;
+}
+$arr = array(3,4, 5, 544, 4, 22, 66, 0);
+//$res = insertSort($arr);
+//print_r($res);
+
+$b=array('4','3','8','9','2','1');
+$len=count($b);//6
+
+for($k=0;$k<=$len;$k++)
+{
+    for($j=$len-1;$j>$k;$j--){
+        if($b[$j]<$b[$j-1]){
+            $temp = $b[$j];
+            $b[$j] = $b[$j-1];
+            $b[$j-1] = $temp;
+        }
+    }
+}
+
+//for($k=1;$k<$len;$k++)
+//{
+//
+//    for($j=0;$j<$len-$k;$j++){
+//        if($b[$j]>$b[$j+1]){
+//            $temp =$b[$j+1];
+//            $b[$j+1] =$b[$j] ;
+//            $b[$j] = $temp;
+//        }
+//    }
+//}
+print_r($b);
+
+$order_array=array(
+    5,4,3,6,7,1,2,10,8,9
+);
+function bubble_order($arr){
+    //得到长度
+    $count_num=count($arr);
+
+    for($k=1;$k<$count_num;$k++){
+
+        //对长度越来越少的一组数据 找出最大让其浮到最后
+
+        for($i=0;$i<$count_num-$k;$i++){
+
+            if($arr[$i]>$arr[$i+1]){//相邻比较
+                $tem=$arr[$i];
+                $arr[$i]=$arr[$i+1];
+                $arr[$i+1]=$tem;
+            }
+
+        }
+    }
+    return $arr;
+}
+$new_order_arr=bubble_order($order_array);
+
+
+　　

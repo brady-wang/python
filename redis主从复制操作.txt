@@ -1,0 +1,25 @@
+redis主从复制操作
+1. 33.10服务器上 启动三个redis 
+bin/redis-server etc/redis.conf
+bin/redis-server etc/6380conf
+bin/redis-server etc/6381.conf
+ 
+ 
+2. 33.50服务器作为主服务器
+ 
+3.配置从服务器
+
+ 
+cp redis.conf 6380.conf
+cp redis.conf 6381.conf
+更改启动端口为 6380 和6381 
+port
+slaveof 配置主服务器 
+重启 登陆
+
+根据不同端口登陆
+
+ 
+kill  进程号
+主服务器keys * 查看和从服务器是否一致
+ 

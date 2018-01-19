@@ -1,0 +1,21 @@
+ECSHOP后台商品列表显示商品缩略图
+ECSHOP后台商品列表显示商品缩略图
+ECSHOP教程 / ecshop 教程网(www.ecshop119.com) 2013-11-06
+ 
+
+
+
+ecshop 后台商品列表显示商品缩略图，大楷步凑如下：
+一：admin\includes\lib_goods.php （可能是781行）$sql = “SELECT goods_id, goods_name, goods_sn, shop_price, goods_thumb, is_on_sale, is_best, is_new, is_hot, goods_number, integral, ” .
+添加：goods_thumb,加多红色部分二：admin\templates\goods_list.htm在以地方加多红色部分（可能是41行）查找：<th><a href=”javascript:listTable.sort(‘goods_name’); “>{$lang.goods_name}</a>{$sort_goods_name}</th>
+换行添加
+<th><a href=”javascript:listTable.sort(‘goods_img’); “>商品图缩略图</a></th>
+ 
+查找：<td style=”{if $goods.is_promote}color:red;{/if}”><span onclick=”listTable.edit(this, ‘edit_goods_name’, {$goods.goods_id})”>{$goods.goods_name|escape:html}</span></td>
+换行添加
+<td><img src=”../{$goods.goods_thumb}” width=”80″ /></td>
+ 
+其中： width=”80″ 是显示图片大小。 你可以修改80 大小。更具你的不同来显示。
+
+
+

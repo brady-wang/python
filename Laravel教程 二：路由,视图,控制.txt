@@ -1,0 +1,125 @@
+Laravel教程 二：路由,视图,控制器工作流程
+Laravel教程 二：路由,视图,控制器工作流程
+此文章为原创文章,未经同意,禁止转载。
+
+View
+Controller
+
+
+上一篇教程我们走了那么长的路，终于把Laravel安装好了，这一篇教程我们就要进入Laravel的神奇世界了，主要是讲解Laravel的Router，Views，Controllers的工作流程，目的也就是让大家明白Laravel在处理一个get请求的时候是如何工作的。
+在开始之前，我们首先得将我们的服务器启动起来，如果你使用Laravel的artisan，你可以直接：
+php artisan serve
+
+然后访问localhost:8000，就可以看到Laravel了
+我这里还是使用Homestead：
+homestead up
+
+homestead 启动之后，我们就可以愉快开始写代码了。
+Laravel 文件目录
+然后访问我们上一节设置好的域名：blog.dev，也可以看到我们的Laravel。如果你在安装或者使用Homestead的时候遇到任何问题，都可以直接问我。
+
+首先，对于一个新手来接触Laravel的时候，可能你会对Laravel的文件目录感觉到很困惑，因为实在是太多东西了，到底什么是Console，Events，Providers...一大堆东西在这里。
+但是不用担心，我们后续的教程会陆续讲解相关的内容。
+目前我们关心的是Http/这个文件夹，你可以就简单地记忆为这个文件夹就是用来出来http请求的，比如我们在访问blog.dev的时候，Laravel是怎么将那个可爱的页面响应给我们的？这个就可以在app/Http/routes.php这个文件里面找到，就像上图显示的一样：
+Route::get('/', function () {
+    return view('welcome');
+});
+
+这是什么意思呢？其实这里你可以这样理解：我们注册这样一个路由，当用户发送一个get请求(简单理解就是在浏览器地址栏中访问)的时候，什么样的get请求呢？也就是什么样的浏览地址呢？恩，就是网站的根目录，也就是当一个用户访问我们站点的根目录的时候，我们应该给用户什么样的响应呢？这里我们就直接执行一个函数function () {}，这个函数里面就负责加载一个视图return view('welcome');，这个试图文件位于resources/views/welcome.blade.php，这里的试图文件后缀名blade.php可能会比较疑惑，因为Laravel使用的是blade的模板引擎，如果你接触过其他的模板引擎如Twig，Smarty等，对模板引擎的理解可能会清晰一点。但是如果你在这里还是不太明白，没有关系，我后续会有专门的课程介绍blade模板。现在需要记住的是：Laravel的模板文件就是blade.php结尾的。
+
+你可以直接打开resources/views/welcome.blade.php这个文件来看，里面其实就是一些HTML代码，easy enough。
+
+所以上面的路由注册其实就是负责解决访问blog.dev的时候的响应。那么我们来尝试一个Hello World简单的返回：
+Route::get('/', function () {
+    return 'Hello World';
+//    return view('welcome');
+});
+
+回到浏览器，再次访问blog.dev，我们就会看到上面写的Hello World。
+
+参数
+试着传入参数，我们重新注册一个路由：
+Route::get('/', function () {
+    return view('welcome');
+});
+Route::get('user/{name}', function ($name) {
+    return 'Hello '.$name;
+});
+
+上面第二个就是我们自己重新注册的路由，在路由中得变量用大括号{}包裹起来，然后在处理函数中接收这个参数，访问http://blog.dev/user/guys，可以看到下面的返回结果。
+上面这个时候，我们如果访问http://blog.dev/user，这是报错的，因为这个路由期望你在后面输入一个变量$name，但是你并没有，所以会报错，我们可以通过可选参数来实现这个目的
+可选参数：
+Route::get('user/{name?}', function ($name = null) {
+    return 'Hello '.$name;
+});
+
+这个时候，再次访问http://blog.dev/user就不会报错了，但是貌似这个时候只返回了Hello，我们也可以设置一个默认值：
+Route::get('user/{name?}', function ($name = 'JellyBool') {
+    return 'Hello '.$name;
+});
+
+这个时候，如果我们没有输入$name这个变量，我们会返回 Hello JellyBool
+
+使用控制器
+上面注册的这些路由是直接使用了匿名函数来返回字符串或加载视图给我们，但是我们的控制器(controller)去哪里了呢？我们怎么使用控制器呢(controllers)？首先我们需要明白，在注册路由是使用控制器在Laravel中大概是这样写的：
+Route::get('/','ArticleController@index');
+
+我们将routes.php中原来的注册路由全部删掉，只保留上面这一行代码：这行代码的意思是，当用户请求我们的网站跟目录的时候，我需要找到ArticleController并执行它的index方法，接下来，我们就需要创建我们的ArticleController了：
+在命令行中执行：
+php artisan make:controller ArticleController
+
+上一篇文章说过artisan这个工具很强大，他可以用来生成我们在开发当中需要的很多东西，给我们的开发带来了很多的便利，如果你花点时间慢慢适应一下，我敢肯定，你以后会爱上Laravel的，会爱上artisan的。这里只是使用了artisan得make:controller命令，其实artisan可以干的事情很多，我们在这个教程中会一一接触到，如果你迫不及待，可以直接看官方文档：
+http://laravel.com/docs/5.1/artisan
+上面的命令给我们在app/Http/Controllers/目录下生成了ArticleController.php，我们打开它来看看：
+
+在这个文件里面，Laravel帮我们生成了一堆的方法：index()，show()，create()...等，然后我们刚刚在Router(routes.php文件)中注册的路由需要使用ArticleController的index方法，我们就在index()方法里面加载一个视图：
+public function index()
+{
+    return view('articles.lists');
+}
+
+创建视图文件
+这个视图文件应该是位于resources/views/articles/lists.blade.php，但是在views文件夹当中，我们并没有articles/这个文件夹和lists.blade.php，所以我们需要手动创建之。
+
+这里需要注意的是，Laravel的view()方法会默认从views文件夹查找视图文件，所以你不用在view()方法中加入resources/views这个路径，而且你也不用将blade.php写上，Laravel会自动处理这些事情，至于views()方法articles.lists中得.就使用了路径别名，你也可以使用/来写成这样articles/lists
+
+
+创建好之后，在articles/lists.blade.php写入简单地HTML代码：
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/html">
+<head>
+    <meta charset="UTF-8">
+    <title>Article lists page</title>
+    </head>
+<body>
+<h1>这是文章列表页面</h1>
+</body>
+</html>
+
+然后访问blog.dev/，我们就可以看到上面的模板内容了：
+
+到这里，不知道你对Laravel的Router，Views，Controllers这三个的工作流程有没有一个清晰的认识，通常我们需要实现某个功能(或者说新创建一个页面)都是这样的：
+1. 在routes.php中注册路由 ---> 2. 创建对于的控制器 ---> 3. 在控制器中得对于方法加载视图
+
+对应得实际操作大概是这样的：
+1. Route::get('/','ArticleController@index');
+
+2. php artisan make:controller ArticleController
+
+3. public function index()
+    {
+        return view('articles.lists');
+    }
+
+下一节
+关于Laravel的Router，Views，Controllers的工作流程就大概讲到这里，如果你有任何疑问，可以随时在评论里面问我。然后下一节的内容会讲以下的内容：
+
+数据库的配置和Laravel的Migration用法
+将变量传给视图文件
+blade模板的基本用法
+
+最后：
+Happy Hacking
+
+赏
+ 

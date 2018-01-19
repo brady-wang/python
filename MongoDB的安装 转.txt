@@ -1,0 +1,384 @@
+MongoDB的安装 转
+
+
+第1章 MongoDB的安装
+(黎明你好原创作品，转载请注明)
+1.1 MongoDB简介
+        MongoDB是一个基于分布式文件存储的数据库开源项目。由C++语言编写，旨在为WEB应用提供可护展的高性能数据存储解决方案。
+        它的特点是可扩展，高性能，易使用，模式自由，存储数据非常方便等。
+ 
+1.1.1 主要功能特性
+a)面向文档存储：(类JSON数据模式简单而强大)。
+b)高效的传统存储方式：支持二进制数据及大型对象（如照片和视频）。
+c)复制及自动故障转移：Mongo数据库支持服务器之间的数据复制，支持主-从模式及服务器之间的相互复制。
+d)Auto-Sharding自动分片支持云级扩展性（处于早期alpha阶段）：自动分片功能支持水平的数据库集群，可动态添加额外的机器。
+e)动态查询：它支持丰富的查询表达式。查询指令使用JSON形式的标记，可轻易查询文档中内嵌的对象及数组。
+f)全索引支持：包括文档内嵌对象及数组。Mongo的查询优化器会分析查询表达式，并生成一个高效的查询计划。
+g)支持RUBY，PYTHON，JAVA，C++，PHP等多种语言。
+ 
+1.1.2 适用场景
+a)适合实时的插入，更新与查询，并具备应用程序实时数据存储所需的复制及高度伸缩性。
+b)适合作为信息基础设施的持久化缓存层。
+c)适合由数十或数百台服务器组成的数据库。因为Mongo已经包含对MapReduce引擎的内置支持。
+d)Mongo的BSON数据格式非常适合文档化格式的存储及查询。
+ 
+1.1.3 不适用场景
+a)高度事务性的系统。
+b)传统的商业智能应用。
+c)级为复杂的SQL查询。
+ 
+1.2 Windows环境安装
+1.2.1 下载tar包
+mongodb-win32-x86_64-2.4.6。
+ 
+1.2.2 配置文件
+创建log文件夹
+
+
+Java代码  
+
+
+md D:\mongodb-win32-x86_64-2.4.6 \log  
+
+ 
+创建MongoDB的logpath选项的配置文件：
+
+
+Java代码  
+
+
+echo logpath=d:\mongodb-win32-x86_64-2.4.6\log\mongo.log > d:\mongodb-win32-x86_64-2.4.6\mongod.cfg  
+
+ 
+1.2.3 手动启动
+启动服务
+
+
+Java代码  
+
+
+mongod --dbpath d:\mongodb_data  
+或  
+mongod --config d:\mongodb-win32-x86_64-2.4.6\mongod.cfg  
+
+ 
+1.2.4 服务启动
+安装 MongoDB 程序作为Windows 服务。
+
+
+Java代码  
+
+
+安装 MongoDB 服务  
+mongod --config d:\mongodb-win32-x86_64-2.4.6\mongod.cfg --install  
+  
+运行 MongoDB 服务  
+net start MongoDB  
+  
+移除服务  
+mongod --remove  
+
+ 
+1.2.5 REST is not enabled
+当出现以下错误时
+REST is not enabled. use --rest to turn on. check that port 28017 is secured for the network too.
+解决办法：
+使用命令行启动时：
+
+
+Java代码  
+
+
+mongod --dbpath d:\mongodb_data  --rest --port 27017  
+
+ 
+重新安装系统服务：
+
+
+Java代码  
+
+
+mongod --dbpath d:\mongodb_data --config d:\mongodb-win32-x86_64-2.4.6\mongod.cfg --rest --port 27017 --install  
+
+ 
+1.3 Linux环境安装
+1.3.1 下载包tgz
+mongodb-linux-i686-2.4.6.tgz
+ 
+1.3.2 创建用户
+创建用户
+
+
+Java代码  
+
+
+adduser mongodb   
+passwd mongodb  
+
+ 
+1.3.3 创建数据库文件
+创建数据库文件
+
+
+Java代码  
+
+
+mkdir -p /data/mongodb_data  
+chown mongodb /data/mongodb_data –R  
+chgrp mongodb /data/mongodb_data -R  
+
+ 
+1.3.4 配置文件
+创建log文件夹
+
+
+Java代码  
+
+
+mkdir /opt/mongodb/mongodb-linux-i686-2.4.6/logs  
+
+ 
+创建MongoDB的logpath选项的配置文件：
+
+
+Java代码  
+
+
+echo /opt/mongodb/mongodb-linux-i686-2.4.6/bin/mongod --dbpath /data/mongodb_data/ --logpath /opt/mongodb/mongodb-linux-i686-2.4.6/logs/mongodb.log --rest --port 27017  
+
+ 
+1.3.5 手动启动
+启动服务
+
+
+Java代码  
+
+
+./mongod --dbpath /data/mongodb_data  
+
+ 
+1.3.6 服务启动
+安装 MongoDB 程序作为Linux 服务。
+安装 MongoDB 服务
+
+
+Java代码  
+
+
+echo /opt/mongodb/mongodb-linux-i686-2.4.6/bin/mongod --dbpath /data/mongodb_data/ --logpath /opt/mongodb/mongodb-linux-i686-2.4.6/logs/mongodb.log --rest --port 27017–fork >> /etc/rc.local  
+
+ 
+1.4 链接数据库
+使用命令行方式，并创建student数据库 
+命令行链接病创建数据库
+
+
+Java代码  
+
+
+>mongo  
+>use student  
+
+ 
+在Student数据库中，创建user集合，插入一条文档
+在Student数据库插入一条数据并查询
+
+
+Java代码  
+
+
+db.user.save({username: "limingnihao", nickname: "黎明你好", password: "123456"})  
+
+ 
+ 1.5 操作命令
+
+
+
+功能
+命令
+
+
+进入和创建数据库
+use test
+
+
+增加或修改用户密码
+db.addUser('name','pwd')
+
+
+查看用户列表
+db.system.users.find()
+
+
+用户验证
+db.auth('name','pwd')
+
+
+删除用户
+db.removeUser('name')
+
+
+查看主从复制状态
+db.printReplicationInfo()
+
+
+修复数据库
+db.repairDatabase()
+
+
+拷贝数据库
+db.copyDatabase("mydb","temp", 127.0.0.1");
+
+
+克隆数据库
+db.cloneDatabase(“127.0.0.1”);
+
+
+删除当前的数据库
+db.dropDatabase()
+
+
+查看当前使用的数据库
+db.status()
+
+
+数据库版本
+db.version()
+
+
+查看所有用户
+show users
+
+
+查看所有数据库
+show dbs
+
+
+查看所有的collection
+show collections
+
+
+查看profiling
+show profile
+
+
+查询之前的错误信息
+db.getPrevError()
+
+
+清除错误记录
+db.resetError()
+
+
+创建一个聚集集合（table）
+db.createCollection(“collName”, {size: 20, capped: 5, max: 100})
+
+
+得到指定名称的聚集集合（table）
+db.getCollection("account")
+
+
+得到当前db的所有聚集集合
+db.getCollectionNames()
+
+
+显示当前db所有聚集索引的状态
+db.printCollectionStats()
+
+
+
+ 
+ 
+1.6 数据类型
+ 
+
+
+
+数据类型
+描述
+距离
+
+
+布尔值
+true 或者false
+真或者假： true 或者false
+
+
+32 位整数
+32 位整数。shell 是不支持该类型的， shell 中默认会转换成 64位浮点数
+ 
+
+
+64 位整数
+64 位整数。shell 是不支持该类型的， shell 中默认会转换成 64位浮点数
+ 
+
+
+64 位浮点数
+64 位浮点数。shell 中的数字就是这一种类型
+{ “x”： 3.14 ，“y” ： 3}
+
+
+字符串
+UTF-8 字符串
+{ “foo”:“bar”}
+
+
+对象id
+文档的 12 字节的唯一id
+{ “id”: ObjectId()}
+
+
+日期
+从标准纪元开始的毫秒数
+{ “date”:new Date()}
+
+
+正则表达式
+文档中可以包含正则表达式，遵循 JavaScript 的语法
+{ “foo”:/foobar/i}
+
+
+JS代码
+文档中可以包含 JavaScript 代码
+{ “x”： function() {}}
+
+
+二进制数据
+任意字节的二进制串组成， shell 不支持
+ 
+
+
+未定义
+undefined
+{ “x”： undefined}
+
+
+数组
+值的集合或者列表
+{ “arr”: [“a”,“b”]}
+
+
+内嵌文档
+文档可以作为文档中某个 key 的value
+{ “x”:{“foo”:“bar”}}
+
+
+null
+表示空值或者未定义的对象
+{ “x”:null}
+
+
+
+ 
+ObjectId类型结构：
+ 
+
+
+
+
+查看图片附件
+
+
+
+

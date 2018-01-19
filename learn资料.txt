@@ -1,0 +1,52 @@
+learn资料
+老陈的CSDN博客： http://blog.csdn.net/qq_35587839
+1.memcache 和 memcached的区别：http://www.phpweblog.net/fuyongjie/articles/7760.html
+2.memcached+magent实现memcached集群；http://www.cnblogs.com/happyday56/p/3461113.html
+3.PHP运行模式 :http://www.cnblogs.com/xia520pi/p/3914964.html
+4.索引基础：http://note.youdao.com/share/?id=aa6e27bb8723c8319fbd0849395648cf&type=note
+5.yslow: http://www.cnblogs.com/lori/archive/2013/03/19/2969510.html
+6.laravel框架增删改查：http://www.golaravel.com/laravel/docs/5.0/queries/#selects
+7.larave框架学习笔记：http://blog.csdn.net/fationyyk/article/details/50886458
+8.linux性能分析前60000毫秒: http://mp.weixin.qq.com/s?__biz=MzA3MzYwNjQ3NA==&mid=402576168&idx=2&sn=abaecd70796b04b3d9eb8b13311f22b5&scene=23&srcid=01208HvB8ovnZ68WkGcXAeUF#rd
+9.为什么找不到工作的是你，技术差的还是你:http://mt.sohu.com/20160523/n451003887.shtml
+10.快速开发QQ登陆:http://open.51094.com/user/addConfig.html?type=1&id=157ad73410388d12:silm框架官网:http://www.slimphp.net/
+13.nginx+php-fpm出现502 bad gateway错误解决方法详细出处参考：http://www.nginx.cn/102.html
+14.SEO优化:http://zhanzhang.baidu.com/college/courseinfo?id=154&page=1&qq-pf-to=pcqq.group
+15.聊一聊PV和并发、以及计算web服务器的数量的方法:http://toutiao.com/a6319610612473184514/?tt_from=mobile_qq&utm_campaign=client_share&app=news_article&utm_source=mobile_qq&iid=5171651292&utm_medium=toutiao_android
+16.网络七层协议：http://baike.baidu.com/link?url=ApOZeYeDsith5Up_cCmhkEntD0WiikuIKCpuuqsM0Qvg5kVflCuDC0MpeBCioThirgcQ_m5NHvn24jWHI-H28_&qq-pf-to=pcqq.group
+17.TCP端口状态说明ESTABLISHED、TIME_WAIT：http://blog.csdn.net/zdwzzu2006/article/details/7713499
+18.MySQL5.7中InnoDB不可不知的新特性（有彩蛋):http://toutiao.com/a6326631342965195010/?tt_from=mobile_qq&utm_campaign=client_share&app=news_article&utm_source=mobile_qq&iid=5389508271&utm_medium=toutiao_android
+19.超实用压力测试工具－ab工具：http://www.jianshu.com/p/43d04d8baaf7
+20.http请求头响应头详细参数：http://tools.jb51.net/table/http_header
+21.最全的HTTP头部信息分析 ，HTTP头部参数详解：http://xiejiaming.com/195.html
+22.MySQL运行状态show status详解：http://www.ttlsa.com/mysql/mysql_show_status_descriptsions/
+23.【MySQL】计算 TPS,QPS 的方式：http://blog.itpub.net/22664653/viewspace-767265/
+24.mysql状态查看 QPS/TPS/缓存命中率查看：http://blog.163.com/ji_1006/blog/static/106123412013101421530142/
+25.apache高负载性能调优：http://blog.chinaunix.net/uid-22120556-id-2827648.html
+26.Nginx配置性能优化： http://blog.csdn.net/xifeijian/article/details/20956605
+27.高负载PHP-FPM调优： http://www.linuxidc.com/Linux/2013-07/86963.htm
+28.MySQL优化必须调整的10项配置：http://www.jb51.net/article/47419.htm 
+29.360网盘：http://www.pantb.com/forum-2-1.html  
+30.四层和七层负载均衡的区别：http：http://kb.cnblogs.com/page/188170/  
+31.YSlow团队的23条“Web性能最佳实践和规则”：http://blog.csdn.net/yaoxtao/article/details/39963631
+32.hdfs：http://baike.baidu.com/link?url=HKZEbHOFgxeyVlMRKXJJRxoETrxBUsW_wkRt_mhv9CfQj8UmYZu6A_h68Rs-Boi2ygCpHS50Nw5S2fAwzaGuXK&qq-pf-to=pcqq.group
+33.Keepalived+LVS+Nginx负载均衡之高可用：http://www.cnblogs.com/Leo_wl/p/5393343.html
+34.CentOS 6.4下Squid代理服务器的安装与配置：http://www.cnblogs.com/mchina/p/3812190.html 
+35.SOA （面向服务的体系结构）:http://baike.baidu.com/link?url=EcYfxfcef6Lh8vDdzKCBdJGImrRBlaOqSND6PcI1XGjvJYY9lJBC7ENJla2NUyRw1wM163clLg3Uteyaxb7bFgS2iPFyraWxwn1hqLF2KsO&qq-pf-to=pcqq.group
+36.web开发分页数据缓存设计分析:http://toutiao.com/a6329674067586875649/?tt_from=mobile_qq&utm_campaign=client_share&app=news_article&utm_source=mobile_qq&iid=5479458067&utm_medium=toutiao_android
+37.当服务QPS增高时我们做什么 :http://mp.weixin.qq.com/s?__biz=MzA3MzYwNjQ3NA==&mid=2651297137&idx=1&sn=916a4592c65cd94a7eda5f3f1a018c2c&scene=2&srcid=0913XaSn7IklR5vSMQi1Uz0a&from=timeline&isappinstalled=0#wechat_redirect
+38.FIFO 、LRU、LFU三种算法:http://blog.sina.com.cn/s/blog_50197c290101ft7a.html
+39.Redis简单案例(一) 网站搜索的热搜词: http://toutiao.com/a6330917637807702273/?tt_from=mobile_qq&utm_campaign=client_share&app=news_article&utm_source=mobile_qq&iid=5479458067&utm_medium=toutiao_android  
+40.redis使用watch完成秒杀抢购功能 ：http://blog.csdn.net/e421083458/article/details/49741451 
+41.mysql触发器：http://www.cnblogs.com/zzwlovegfj/archive/2012/07/04/2576989.html 
+42.mysql 生成流水号 存储过程 订单编号：http://blog.csdn.net/dengsilinming/article/details/8488626
+43.MySQL存储过程详解  mysql 存储过程：http://blog.sina.com.cn/s/blog_52d20fbf0100ofd5.html
+44.mysql触发器(Trigger)简明总结和使用实例：http://www.jb51.net/article/49207.html
+45.MySQL比like语句更高效的写法locate position instr find_in_set   http://blog.sina.com.cn/s/blog_75ad10100101plm5.html
+46.MYSQL explain详解 http://blog.csdn.net/zhuxineli/article/details/14455029
+47.mysql调优三部曲  http://www.linuxidc.com/Linux/2012-09/70459.htm    
+48.oos详解： https://help.aliyun.com/document_detail/31884.html?spm=5176.doc31883.2.2.saihjl     
+49。restful接口规范：http://blog.csdn.net/wlchn/article/details/48369233        
+50.nginx统计访问量：http://www.toutiao.com/a6341876892623536386/?tt_from=mobile_qq&utm_campaign=client_share&app=news_article&utm_source=mobile_qq&iid=5845657502&utm_medium=toutiao_android                               
+51。面向对象设计七大原则：http://www.cnblogs.com/sunflower627/p/4718702.html
+52.缓存超时常见的策略：http://www.toutiao.com/a6343193230619738370/?tt_from=mobile_qq&utm_campaign=client_share&app=news_article&utm_source=mobile_qq&iid=5845657502&utm_medium=toutiao_android

@@ -1,0 +1,135 @@
+Nginx配置文件解析
+
+Nginx配置文件解析
+  (2015-11-25 10:45:22)
+转载▼
+
+
+
+
+
+标签： 
+it
+
+分类： WebServer
+
+
+
+
+一. 配置文件结构
+ 
+
+二. 全局块详解
+ 
+#定义nginx运行的用户和用户组
+user www www;
+ 
+#定义nginx进程数（建议设置为CPU数）
+worker_processes 8;
+ 
+#全局错误日志定义类型（错误日志类型：[debug|info|notice|warn|error|crit]，从左到右错误信息越来越少；此指令可以在全局、http、server、location块中配置）
+error_log /var/log/nginx/error.log info;
+ 
+#定义进程文件
+pid /var/run/nginx.pid; 
+ 
+ 
+三. events块详解
+#定义工作模式
+use epoll
+ 
+#连接数上限（单个进程的最大连接数，web服务器的最大访问用户数 max clients = worker_processes * worker_connections）
+worker_connections 1024
+ 
+#网络连接序列化（为了避免唤醒太多的进程数，会影响系统性能）
+accept_mutex  on
+ 
+#工作进程是否允许同时接收多个网络连接
+multi_accept  on
+ 
+ 
+四. http块详解
+ 
+#设定mime类型（MIME-Type类型由mime.type文件定义）
+include /etc/nginx/mime.types;
+default_type application/octet-stream;
+ 
+
+#默认编码
+charset utf-8;
+
+ 
+#定义服务器日志（此处的日志与常规的不同，它记录的是nginx服务器提供服务过程中应答前端请求的日志）
+
+access_log /var/log/nginx/access.log combined;
+log_format combined  '$remote_addr - $remote_user [$time_local] "$request" '
+    '$status $body_bytes_sent "$http_referer" '
+ 
+#连接超时时间（单位：秒，可在http、server、location中配置）
+
+keepalive_timeout 120;
+reset_timeout_connection on;
+
+ 
+#单连接请求数上限 （限制用户通过某一连接项服务器发送请求的次数，可在http、server、location中配置）
+keepalive_requests 100;
+ 
+#是否允许sendfile方式传输文件（可在http、server、location中配置）
+sendfile on;
+sendfile_max_chunk 128k   （#如果设置为0，则无限制）
+ 
+#
+tcp_nopush on;
+ 
+ 
+#开启gzip压缩
+
+gzip  on;
+gzip_disable "MSIE [1-6]\.(?!.*SV1)";
+gzip _min_length  1000;
+gzip_buffers  168k
+ 
+#设置负载均衡服务器列表
+upstream mysvr {
+     server 192.168.1:80 weight=5;
+     server 192.168.1:80 weight=2;
+     server 192.168.1:80 weight=8;
+}
+ 
+ #shorten the timeout period, original one is 300
+        fastcgi_connect_timeout 30;
+        fastcgi_send_timeout 300;
+        fastcgi_read_timeout 300;
+        fastcgi_buffer_size 128k;
+        fastcgi_buffers 8 128k;
+        fastcgi_busy_buffers_size 256k;
+        fastcgi_temp_file_write_size 256k;
+        fastcgi_intercept_errors on;
+        fastcgi_hide_header Pragma;
+        # fastcgi cache
+        fastcgi_cache_path temp/fastcgi_cache levels=1:2 keys_zone=cache_voice:128m inactive=30m max_size=4G;
+ 
+
+五. server块详解
+ 
+#监听端口
+listen 80;
+ 
+#服务域名
+server_name www.xxx.com;
+ 
+#虚拟主机的访问日志
+access_log /var/log/nginx/www.xxx.com_access.log main;
+ 
+
+#如果指定http错误状态码，则返回客户端指定的url地址
+error_page 500 502 503 504 /50x.html;
+location = 50x.html {
+    root /home/xiaoju/webroot;
+}
+ 
+
+六. location块详解
+#定义网站根目录
+root /home/xiaoju/webr
+

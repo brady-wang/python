@@ -1,0 +1,86 @@
+Ubuntu 12.04.1 LTS 升级 PHP 从5.3 到 5.5
+#!/bin/bash
+# desc install php5.5
+#add-apt-repository ppa:ondrej/php5
+#apt-get install python-software-properties
+#apt-get update
+#apt-get install php5
+#php5 -v
+apt-get install python-software-properties
+apt-get install -y ppa-purge
+add-apt-repository ppa:ondrej/php5
+apt-get update
+apt-get install -y php5-fpm
+apt-get install -y php5-mysql php5-curl php5-gd php5-intl php-pear php5-imagick php5-imap php5-mcrypt php5-memcache php5-ming php5-ps php5-pspell php5-recode php5-snmp  php5-tidy  php5-xsl
+ 
+安装完成后改为service方式启动，还有监听方式也要改为sock方式
+ 
+ 
+
+在 Ubuntu 12.04 LTS 中，使用
+sudo apt-get install php5-fpm
+
+安装的 PHP 版本是 5.3，如果想要使用 Laravel 或 Yii2 框架，要求 PHP 版本至少是 5.5+，所以要对 PHP 版本进行升级。
+升级步骤
+初始化操作：
+sudo apt-get update
+sudo apt-get install python-software-properties
+
+更新PPA源：
+sudo add-apt-repository ppa:ondrej/php5
+
+如果只是想升级到5.4，则执行如下命令：
+sudo add-apt-repository ppa:ondrej/php5-oldstable
+
+接下来执行更新和升级：
+sudo apt-get update
+sudo apt-get dist-upgrade
+
+执行命令php -v会发现已经更新成功。
+注1
+如果之前nginx中配置监听9000端口来处理PHP，那么要改成监听UNIX的socket，否则无法正确打开PHP页面。即将
+fastcgi_pass 127.0.0.1:9000;
+
+改成
+fastcgi_pass unix:/var/run/php5-fpm.sock;
+
+
+
+
+2
+3
+4
+5
+6
+7
+8
+9
+10
+11
+12
+13
+14
+
+
+
+#!/bin/bash
+# desc install php5.5
+#add-apt-repository ppa:ondrej/php5
+#apt-get install python-software-properties
+#apt-get update
+#apt-get install php5
+#php5 -v
+apt-get install python-software-properties
+apt-get install -y ppa-purge
+add-apt-repository ppa:ondrej/php5
+apt-get update
+apt-get install -y php5-fpm
+apt-get install -y php5-mysql php5-curl php5-gd php5-intl php-pear php5-imagick php5-imap php5-mcrypt php5-memcache php5-ming php5-ps php5-pspell php5-recode php5-snmp  php5-tidy  php5-xsl
+apt-get install -y php5-redis php5-mysqlnd
+
+
+
+
+
+注2
+

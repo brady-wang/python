@@ -1,0 +1,28 @@
+Ubuntu root 密码忘记-恢复
+ Ubuntu root 密码忘记-恢复 2012-04-27 11:09:22
+
+
+分类： LINUX
+ 
+
+
+方法一：
+   如果用户具有sudo权限，那么直接可以运行如下命令：
+   #sudo su root
+   #passwd
+   #更改密码
+   或者直接运行sudo passwd root命令就可以直接更改root密码。
+   有关sudo su的区别：
+   1.共同点：都是root用户的权限；   2.不同点：su仅仅取得root权限，工作环境不变，还是在切换之前用户的工作环境；sudo是完全取得root的权限和root的工作环境。
+   参考：http://www.cnblogs.com/ljf181275034/archive/2011/09/14/2176704.html
+方法二：
+    如果用户不具备sudo权限，则方法一不能用，并需进入GRUB修改kernel镜像启动参数。本文使用的ubuntu版本为11.04，具体过程如下为：
+   1重启电脑安ESC键或者F2键进入GRUB引导模式如下图所示，选择第二行的recovery mode。
+
+   2 安e进入recovery mode 编译kernel进行启动参数
+   3 在linux /boot/vmlinuz...这一行后面添加 quiet splash rw init=/bin/bash。然后ctrl + x 就可以直接运行。
+
+   4 运行后系统直接进入root mode，此时运行passwd命令更改密码。
+
+ 
+

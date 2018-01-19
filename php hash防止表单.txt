@@ -1,0 +1,4 @@
+php hash防止表单
+
+<?php/** * Created by PhpStorm. * User: brady * Desc: * Date: 2017/7/12 * Time: 15:01 */class test extends MY_Controller{    public function __construct()    {        parent::__construct();    }    public function index()    {        //防csrf攻击        $hash = md5(uniqid(rand(), TRUE));        set_cookie("__hash__", $hash, 0,get_public_domain());        $this->_viewData['__hash__'] = $hash;        parent::index();    }    public function do_submit()    {        $data = $this->input->post();        dump($data);        if(empty($data['__hash__'])){            echo "hacker";        }        echo $cookie_hash = get_cookie('__hash__');        if($cookie_hash === $data['__hash__']) {            echo "验证通过";            dump($_COOKIE);        } else {            echo "hacker";        }    }}
+

@@ -1,0 +1,61 @@
+语言切换
+ECSHOP商城模板实现英文繁体简体多语言切换
+ECSHOP教程 / ecshop 教程网(www.ecshop119.com) 2013-11-17
+ 
+
+
+各位ECSHOP网店系统用户大家好，欢迎来到ECSHOP教程网图文教程，今天为大家详细解说一下ECSHOP模板实现英文繁体简体多语言切换ECSHOP教程网ECSHOP视频教程也再不断的完善与跟进，期待大家的关注！希望在ECSHOP的道路上，ecshop教程网与您一路同行！
+1）、首先打开 includds/init.php  文件，找到
+
+
+
+require(ROOT_PATH . 'languages/' . $_CFG['lang'] . '/common.php');
+
+
+
+与
+
+
+
+$smarty->assign('lang', $_LANG);
+
+
+
+先将这两行代码删掉。
+ 
+2）、找到
+
+
+
+if ((DEBUG_MODE & 1) == 1)
+
+
+
+在它上边增加
+ 
+
+
+
+
+if(!empty($_REQUEST['lang'])){ $_SESSION['lang']=$_REQUEST['lang'];}if (!empty($_SESSION['lang'])){switch($_SESSION['lang']){  case 'zh_cn':   $_CFG['lang']="zh_cn";  break;  case 'zh_tw':   $_CFG['lang']="zh_tw";  break;  case 'en_us':   $_CFG['lang']="en_us";  break;}
+}require(ROOT_PATH . 'languages/' . $_CFG['lang'] . '/common.php');$smarty->assign('lang', $_LANG);
+
+
+
+
+ 
+3）、修改　/themes/default/library/page_header.lbi 文件
+ 
+在
+
+
+
+<div class="topNavR"></div>
+
+
+
+ 
+上边添加
+ | <a href="?lang=zh_cn">简体</a> | <a href="?lang=zh_tw">繁体</a> | <a href="?lang=en_us">英文</a>
+
+

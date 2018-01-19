@@ -1,0 +1,70 @@
+javascript时间戳和日期字符串相互转换
+
+ 1 <html xmlns="http://www.w3.org/1999/xhtml">
+ 2 <head>
+ 3 <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+ 4 <script type="text/javascript">
+ 5 // 获取当前时间戳(以s为单位)
+ 6 var timestamp = Date.parse(new Date());
+ 7 timestamp = timestamp / 1000;
+ 8 //当前时间戳为：1403149534
+ 9 console.log("当前时间戳为：" + timestamp);
+10 
+11 // 获取某个时间格式的时间戳
+12 var stringTime = "2014-07-10 10:21:12";
+13 var timestamp2 = Date.parse(new Date(stringTime));
+14 timestamp2 = timestamp2 / 1000;
+15 //2014-07-10 10:21:12的时间戳为：1404958872 
+16 console.log(stringTime + "的时间戳为：" + timestamp2);
+17 
+18 // 将当前时间换成时间格式字符串
+19 var timestamp3 = 1403058804;
+20 var newDate = new Date();
+21 newDate.setTime(timestamp3 * 1000);
+22 // Wed Jun 18 2014 
+23 console.log(newDate.toDateString());
+24 // Wed, 18 Jun 2014 02:33:24 GMT 
+25 console.log(newDate.toGMTString());
+26 // 2014-06-18T02:33:24.000Z
+27 console.log(newDate.toISOString());
+28 // 2014-06-18T02:33:24.000Z 
+29 console.log(newDate.toJSON());
+30 // 2014年6月18日 
+31 console.log(newDate.toLocaleDateString());
+32 // 2014年6月18日 上午10:33:24 
+33 console.log(newDate.toLocaleString());
+34 // 上午10:33:24 
+35 console.log(newDate.toLocaleTimeString());
+36 // Wed Jun 18 2014 10:33:24 GMT+0800 (中国标准时间)
+37 console.log(newDate.toString());
+38 // 10:33:24 GMT+0800 (中国标准时间) 
+39 console.log(newDate.toTimeString());
+40 // Wed, 18 Jun 2014 02:33:24 GMT
+41 console.log(newDate.toUTCString());
+42 
+43 Date.prototype.format = function(format) {
+44        var date = {
+45               "M+": this.getMonth() + 1,
+46               "d+": this.getDate(),
+47               "h+": this.getHours(),
+48               "m+": this.getMinutes(),
+49               "s+": this.getSeconds(),
+50               "q+": Math.floor((this.getMonth() + 3) / 3),
+51               "S+": this.getMilliseconds()
+52        };
+53        if (/(y+)/i.test(format)) {
+54               format = format.replace(RegExp.$1, (this.getFullYear() + '').substr(4 - RegExp.$1.length));
+55        }
+56        for (var k in date) {
+57               if (new RegExp("(" + k + ")").test(format)) {
+58                      format = format.replace(RegExp.$1, RegExp.$1.length == 1
+59                             ? date[k] : ("00" + date[k]).substr(("" + date[k]).length));
+60               }
+61        }
+62        return format;
+63 }
+64 console.log(newDate.format('yyyy-MM-dd h:m:s'));
+65 
+66 </script>
+
+ 

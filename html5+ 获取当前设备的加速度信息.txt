@@ -1,0 +1,35 @@
+html5+ 获取当前设备的加速度信息
+getCurrentAcceleration
+获取当前设备的加速度信息
+
+void plus.accelerometer.getCurrentAcceleration( successCB, errorCB );
+说明：
+加速度是设备在当前方向上所做相对运动变化（增、减量）的运动传感器。加速度信息包括x、y、z三个方向的信息。 加速度信息可通过successCB回调函数返回。加速度信息获取失败则调用回调函数errorCB。
+参数：
+
+successCB: ( AccelerometerSuccessCallback ) 必选 获取设备加速度信息成功回调函数
+errorCB: ( AccelerometerErrorCallback ) 可选 获取设备加速度信息失败回调函数
+
+返回值：
+void : 无
+示例：
+
+<!DOCTYPE html>
+<html>
+	<head>
+	<meta charset="utf-8"/>
+	<meta name="viewport" content="initial-scale=1.0, maximum-scale=1.0, user-scalable=no"/>
+	<title>Accelerometer Example</title>
+	<script type="text/javascript">
+// 监听plusready事件  
+document.addEventListener( "plusready", function(){
+	// 扩展API加载完毕，现在可以正常调用扩展API
+	plus.accelerometer.getCurrentAcceleration( function( a ) {
+		alert( "Acceleration\nx:" + a.xAxis + "\ny:" + a.yAxis + "\nz:" + a.zAxis );
+	} );
+}, false );
+	</script>
+	</head>
+	<body>
+	</body>
+</html>

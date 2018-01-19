@@ -1,0 +1,7 @@
+mysql-python
+ sudo pip install MySQL-python 
+ 
+centos安装 python-dev包提示No package python-dev available：
+出现此问题的原因是python-dev的包在centos的yum中不叫python-dev，而是python-devel.
+所以使用下面的命令即可安装python-dev:
+yum install python-devel

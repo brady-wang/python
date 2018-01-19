@@ -1,0 +1,15 @@
+登录方法借鉴
+ 
+<?phpdefined('BASEPATH') OR exit('No direct script access allowed');/** * Created by PhpStorm. * User: huangyaokui * Date: 16/4/23 * Time: 下午2:17 */class Common_Controller extends CI_Controller{    protected $user_id = 0;    protected $session_data = [];    //不用用户认证的方法在$except数组里配置    protected $except = [];
+    public function __construct()    {        parent::__construct();
+        try{            $this->authentication();        }catch (Exception $e){            $this->errorResponse($e);        }    }
+    /**     * 是否需要登录认证     * @return bool     */    private function isCheck()    {        $array = array_change_key_case(array_flip($this->except));        $method = strtolower($this->router->method);
+        return array_key_exists($method, $array) ? false : true;    }
+    /**     * 登录认证     * @throws Exception     */    private function authentication()    {        if ( $this->isCheck() ) {            $token = $this->input->get_post('token', true);
+            if ($token) {                $this->checkCache(trim($token));            }else{                throw new Exception('请登录', '401');            }        }    }
+    /**     * 从缓存里查询用户是否登录     * @param $token     * @throws Exception     */    private function checkCache($token)    {        $data = [];        if ( $this->cache->memcached->is_supported() ){            $data = $this->cache->memcached->get($token);            if (!$data) {                $data = $this->checkData($token);            }        }else{            $data = $this->checkData($token);        }
+        if ($data) {            $this->user_id = $data['userId'];            $this->session_data = $data;        }else{            throw new Exception('请登录', '401');        }    }
+    /**     * 从数据库认证     * @param $token     * @throws Exception     */    private function checkData($token)    {        $this->load->model('token_model');         $result = $this->token_model->get([            'where' => [                'token' => $token            ],            'default_limit' => 1,            'order' => 'created desc'        ]);         if ($result) {            if ($result['0']['expire'] < time()) {                throw new Exception('请重新登录', '401');            }
+            $this->session_data = json_decode($result['0']['data'], true);            $this->user_id = $this->session_data['userId'];        }else{            throw new Exception('请登录', '401');        }    }
+    /**     * 成功返回     * @param array $data     */    protected function successResponse(array $data)    {        echo json_encode([            'data' => $data ?: new stdClass(),            'status' => 0,            'message' => ''        ]);        exit;    }
+    /**     * 失败返回     * @param $code     */    protected function errorResponse(Exception $exception)    {        echo json_encode([            'data' => new stdClass(),            'status' => $exception->getCode(),            'message' => $exception->getMessage()        ]);        exit;    }}

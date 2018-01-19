@@ -1,0 +1,24 @@
+Fast-cgi cgi nginx php-fpm 的关系 （转
+Fast-cgi  cgi  nginx  PHP-fpm 的关系
+Fast-cgi是由cgi发展而来,是http服务器(http，nginx等)和动态脚本语言(php，perl等)之间的的通信接口,只是一个接口而已,他以socket的形式存在(可以是文件socket,也可以是ip socket),可以将http服务器和动态脚本解析服务器分离（二者可以部署在不同的服务器上），让http服务器专一处理静态请求和转发动态请求到脚本解析服务器；脚本解析服务器则专一处理动态脚本的请求。
+ 
+Php-fpm:是一个fastcgi进程管理器,也是一个脚本解析服务器
+ 
+借由一个nginx处理一个php请求来解释几者之间的关系
+                                                                                                               
+ 
+ 
+1.nginx服务器启动时自动载入fastcgi进程管理器
+2.Fastcgi进程管理器(php-fpm)自身初始化,并且启动多个cgi解释进程(php-cgi)并等待来自nginx的连接
+3.当nginx服务器收到需要解析php的时，将请求转发到fastcgi接口(socket)，fastcgi进程管理器收到请求后选择并连接一个cgi解释器,nginx服务器将cgi环境变量和标准输入发送给cgi解释器(也就是php-cgi)
+4.FastCGI 子进程(php-cgi)完成处理后将标准输出和错误信息从同一连接返回Web Server。当FastCGI子进程关闭连接时， 请求便告处理完成。FastCGI子进程接着等待并处理来自FastCGI进程管理器(运行在Web Server中)的下一个连接。 
+ 
+以上是fastcgi处理请求的过程,那么cgi呢
+上面说了,cgi只是http服务器与动态脚本语言之间的一个通信端口而已,当他收到来自http服务器的处理请求时，启动脚本解析器来解析。他有很大的缺点,在每次收到来自http服务器的请求时，都要重新启动脚本解析服务器来执行解析(重新加载各种环境变量,配置等等)，解析结束后就退出,周而复始,效率十分的低,而fast-cgi相当于是一个常驻与内存当中的cgi在很大程度上提高了服务器的性能
+ 
+PS：补充一点tomcat
+我们都知到tomccat其实是一个servelt,它其实也是一个脚本解析服务器，主要解析Java程序,不同于php-frm,它采用的是多线程的方式来处理请求,相对而言效率更高且更少的占用系统资源
+ 
+这是本人结合网络上的文章和书上的讲解做的一个总结，有不足之处希望大家指正,大家一起学习哈！
+ 
+关联文章：http://www.cnblogs.com/wanghetao/p/3934350.html

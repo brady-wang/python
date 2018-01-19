@@ -1,0 +1,16 @@
+ecshop后台导航修改教程说明
+ecshop后台导航修改教程说明
+ECSHOP教程 / ecshop 教程网(www.ecshop119.com) 2014-06-25
+ 
+
+
+需要操作的文件为：
+1.修改admin\includes\inc_menu.php
+例如：$modules['02_cat_and_goods']['02_goods_add']    = 'goods.php?act=add';       // 商品列表这是个二维数组，02_cat_and_goods是后台左边目录的大类的名字。'02_goods_add'是在这个大类中的小类的名字。
+2.修改admin\includes\inc_priv.php
+例如:$purview['02_goods_add']         = 'goods_manage';       // 商品列表
+'02_goods_add''对应$modules['02_cat_and_goods']['02_goods_add'] '02_goods_add'
+3.在ecs_admin_action表中，parent_id = 0的为顶级栏目，其他子栏目的操作，都继承了parent_id 和顶级栏目关联起来．把$purview['02_goods_add']         = 'goods_manage'中的'goods_manage'加到数据库，parent_id 选择所需要的ID
+4.在priv_action.php中加$_LANG[''goods_manage'] = '你要的名字';
+
+

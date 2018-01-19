@@ -1,0 +1,87 @@
+php错误报告和调试
+3. 错误报告和调试
+常常犯的一个错误是忘记关闭 PHP 错误和数据库错误报告，这样做是有风险的。在任何一个公开的站点，error_reporting 应该设置为0 ，最多只能设置为 E_ERROR，数据库设置 db_debug 应该设置为 false，基于其他安全考虑，设置不显示出错信息 ini_set('display_errors', 'Off');
+在你编码和调试时，应该把 error_reporting 设置为 E_ALL ，并且在把应用程序发布前解决每一个注意和警告。
+一种简易的方法是在 application/config/database.php 文件设置 db_debug 的值为一个常量 MP_DB_DEBUG，当网站在运行中，如下设置：
+
+
+
+
+
+
+1
+ini_set('display_errors', 'Off');
+
+
+
+
+
+
+
+
+2
+error_reporting(0);
+
+
+
+
+
+
+
+
+3
+define('MP_DB_DEBUG', false); 
+
+
+
+
+
+
+在编码和调试中设置为：
+
+
+
+
+
+
+1
+ini_set('display_errors', 'On');
+
+
+
+
+
+
+
+
+2
+error_reporting(E_ALL);
+
+
+
+
+
+
+
+
+3
+define('MP_DB_DEBUG', true); 
+
+
+
+
+
+
+在接收任何数据到你的程序之前，不管是表单提交的 POST 数据、COOKIE 数据、URI 数据、XML-RPC 数据、还是 SERVER 数组中的数据，我们都推荐你实践下面的三个步骤：
+
+过滤不良数据.
+验证数据以确保符合正确的类型, 长度, 大小等. (有时这一步骤也可取代第一步骤)
+在提交数据到你的数据库之前将其转换.
+
+关于SQL注入，XSS，以及 CSRF ，你应该先了解它们，再决定是否采用方法来防止它们。可以参考CI手册上的安全指南 以及 输入和安全类。也许最重要的原则是在把数据提交到数据库或文件系统之前检查所有用户的输入。
+
+SQL注入。使用 CI 自带的 Active Record 可以解决这个问题。
+XSS (跨站脚本)。通过设置 $config['global_xss_filtering'] = TRUE; 开启自动过滤POST和COOKIE中的跨站脚本攻击，但需要消耗一些资源。也可以在每次处理POST和COOKIE的时候单独使用，把第二个参数设为TRUE，如 $this->input->post('some_data', TRUE); 表单验证类也提供了 XSS 过滤选项，如 $this->form_validation->set_rules('username', 'Username', 'trim|required|xss_clean');
+CSRF (跨站请求伪造)。CI 2.0 将内置 CSRF 检查，在 Google 上搜索 "CSRF tokens" 学习更多关于在保护表单提交和 URL 链接的知识，在 Ajax 应用方面可以搜索 "double cookie submission" 或 "双提交 cookie"。
+SPAM (垃圾留言和恶意注册)。通过保护你的邮件表单，评论表单，以及其他各种免费用户提交的数据来防止垃圾信息，一个简单的方法是只允许一个IP/User客户端在一分钟之内只能提交一次，一个比较好的方式是使用 Captcha ，CI2中内置了一个CAPTCHA的辅助函数。
+

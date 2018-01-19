@@ -1,0 +1,2 @@
+php中判断字符串是否全是中文或含有中文的实现代码
+ header('Content-type:text/html; charset=utf-8'); $str = '你好'; if(preg_match('/^[\x{4e00}-\x{9fa5}]+$/u', $str)>0){  echo '全是中文'; }elseif(preg_match('/[\x{4e00}-\x{9fa5}]/u', $str)>0){  echo '含有中文'; }?>

@@ -1,0 +1,38 @@
+windows(32位 64位)下python安装mysqldb模块
+
+windows(32位 64位)下python安装mysqldb模块
+www.111cn.net 编辑:mengchu9 来源:转载
+
+
+本文章来给各位使用在此windows系统中的python来安装一个mysqldb模块教程，有需要了解学习的朋友可参考参考。
+ 
+1.exe下载地址:http://www.codegood.com/archives/129
+分为32位和64位,下载对应的exe即可
+2.下载完后,双击exe安装即可
+3.检查是否安装成功:如果安装成功,将没有任何提示,如下
+
+
+
+ 代码如下
+复制代码
+
+
+>>> import MySQLdb>>>
+
+
+
+安装不成功的提示:
+
+
+
+ 代码如下
+复制代码
+
+
+
+>>> import MySQLdbTraceback (most recent call last):  File "<stdin>", line 1, in <module>ImportError: No module named MySQLdb>>>--EOF--
+
+
+
+
+

@@ -1,0 +1,2 @@
+用putty玩linux的时候由于以前用window 习惯写完东西按一下ctrl+s 保存
+问题描述：用putty玩linux的时候由于以前用window 习惯写完东西按一下ctrl+s 保存，但是在putty一按下就不能再输入了。后来查找到：ctrl+s 是putty的一个命令大概是这样子：”Long long ago“ 某些旧的”哑终端“会在发送过来的数据太多，显示速度跟不上时发送一个Ctrl+s让对方等一下，然后再准备好继续显示时发送一个Ctrl+q。Putty“兼容”了这个特性。也有人说是Ctrl+s是锁定屏幕用的 。不管是怎样，当你不小心在Putty中按了Ctrl+s后再按一下Ctrl+q就OK了。

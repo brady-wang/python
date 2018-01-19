@@ -1,0 +1,19 @@
+jQuery实现当按下回车键时绑定点击事件
+jQuery实现当按下回车键时绑定点击事件
+
+<script> 
+$(function(){ 
+$(document).keydown(function(event){ 
+　　if(event.keyCode==13){ 
+　　$("#mouse").click(); 
+　　} 
+}); 
+
+$("#mouse").click(function(){ 
+　　alert("nihao"); 
+　　}); 
+}) 
+</script> 
+
+
+　　

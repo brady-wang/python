@@ -1,0 +1,26 @@
+MySQL: Starting MySQL….. ERROR! The server quit without updating PID file解决办法
+
+MySQL: Starting MySQL….. ERROR! The server quit without updating PID file解决办法
+
+
+1 问题
+[root@localhost mysql]# /etc/rc.d/init.d/mysql statusMySQL is not running, but lock file (/var/lock/subsys/mysql[FAILED][root@localhost mysql]# /etc/rc.d/init.d/mysql startStarting MySQL...The server quit without updating PID file (/usr/local/mysql/data/localhost.localdomain.pid).                              [FAILED]
+ 
+2 原因
+没有初始化权限表
+ 
+3 解决办法
+#cd /usr/local/mysql（进入mysql安装目录）#chown -R mysql.mysql .#su - mysql$cd server$scripts/mysql_install_db
+ 
+4 本人解决过程
+[root@localhost ~]# cd /usr/local/mysql
+[root@localhost mysql]# chown -R mysql.mysql .[root@localhost mysql]# su - mysql[mysql@localhost ~]$ cd /usr/local/mysql[mysql@localhost mysql]$ scripts/mysql_install_dbInstalling MySQL system tables...OKFilling help tables...OK
+To start mysqld at boot time you have to copysupport-files/mysql.server to the right place for your system
+PLEASE REMEMBER TO SET A PASSWORD FOR THE MySQL root USER !To do so, start the server, then issue the following commands:
+./bin/mysqladmin -u root password 'new-password'./bin/mysqladmin -u root -h localhost.localdomain password 'new-password'
+Alternatively you can run:./bin/mysql_secure_installation
+which will also give you the option of removing the testdatabases and anonymous user created by default.  This isstrongly recommended for production servers.
+See the manual for more instructions.
+You can start the MySQL daemon with:cd . ; ./bin/mysqld_safe &
+You can test the MySQL daemon with mysql-test-run.plcd ./mysql-test ;
+

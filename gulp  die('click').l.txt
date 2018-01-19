@@ -1,0 +1,8 @@
+gulp  die('click').live('click' composer
+gulp  die('click').live('click' composer
+ 
+packagist.org 
+https://getcomposer.org/
+下载后
+php composer.phar install 
+要FQ才能行

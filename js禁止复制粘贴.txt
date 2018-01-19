@@ -1,0 +1,5 @@
+js禁止复制粘贴
+<input type="text" id="username" name="username" value="zzsky"    onpaste="return false" oncontextmenu="return false"   oncopy="return false" oncut="return false">  
+ 
+密码<input  type="text" />  
+重新输入密码<input  type="text"   onpaste="alert('为保证你的手机号码正确输入，请勿粘贴');return false"/>  

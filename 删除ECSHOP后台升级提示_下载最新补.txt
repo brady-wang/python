@@ -1,0 +1,14 @@
+删除ECSHOP后台升级提示/下载最新补丁升级提示
+删除ECSHOP后台升级提示/下载最新补丁升级提示
+ECSHOP教程 / ecshop 教程网(www.ecshop119.com) 2014-05-30
+ 
+
+
+ 删除最新补丁: v 2.7.3 released 20121106, 发布日期: 2013-12-06. 点击下载  提示
+admin/templates/start.htm
+ 
+大概204行：Ajax.call('index.php?is_ajax=1&act=main_api','', start_api, 'GET', 'TEXT','FLASE');
+改成：
+  // Ajax.call('index.php?is_ajax=1&act=main_api','', start_api, 'GET', 'TEXT','FLASE');
+
+

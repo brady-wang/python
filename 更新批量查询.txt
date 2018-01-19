@@ -1,0 +1,2 @@
+更新批量查询
+        // 获取需要更新的字段。先过滤出拥有相同 key 的数组，再获取 value 不同的列        $intersect_arr = array_intersect_key($attr, $addr_info);        $update_attr = array_diff_assoc($intersect_arr, $addr_info);        if (empty($update_attr)) {            return TRUE;        }

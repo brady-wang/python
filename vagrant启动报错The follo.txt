@@ -1,0 +1,48 @@
+vagrant启动报错The following SSH command responded with a no
+
+vagrant启动报错The following SSH command responded with a no
+
+ 
+来源：互联网 作者：佚名 时间：2015-03-08 22:27
+
+
+The following SSH command responded with a non-zero exit status.Vagrant assumes that this means the command failed!ARPCHECK=no /sbin/ifup eth1 2 /dev/
+
+ 
+ 
+vagrant package打包生成box，以这个box为基础模板，打造vagrant环境，启动vagrant报错
+angel:vagrant $ vagrant up
+Bringing machine 'default' up with 'virtualbox' provider...
+[default] Clearing any previously set forwarded ports...
+[default] Creating shared folders metadata...
+[default] Clearing any previously set network interfaces...
+[default] Available bridged network interfaces:
+1) en0: 以太网
+2) en1: Wi-Fi (AirPort)
+3) bridge100
+What interface should the network bridge to? 2
+[default] Preparing network interfaces based on configuration...
+[default] Forwarding ports...
+[default] -- 22 => 2222 (adapter 1)
+[default] Booting VM...
+[default] Waiting for machine to boot. This may take a few minutes...
+[default] Machine booted and ready!
+[default] Configuring and enabling network interfaces...
+The following SSH command responded with a non-zero exit status.
+Vagrant assumes that this means the command failed!
+ 
+ARPCHECK=no /sbin/ifup eth1 2> /dev/null
+ 
+Stdout from the command:
+ 
+Device eth1 does not seem to be present, delaying initialization.
+ 
+ 
+Stderr from the command:
+ 
+解决方案：
+虽然vagrant up启动报错，但是vagrant ssh还是能登陆虚拟机的，进入虚拟机后，执行如下命令
+sudo rm -f /etc/udev/rules.d/70-persistent-net.rules 
+对， 问题就处在在持久网络设备udev规则（persistent network device udev rules）是被原VM设置好的，再用box生成新VM时，，这些rules需要被更新。而这和Vagrantfile里对新VM设置private network的指令发生冲突。删除就好了。
+再次启动就没问题了。。
+

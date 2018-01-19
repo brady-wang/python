@@ -1,0 +1,2 @@
+nginx+php出现502 不能解析
+到php-fpm下面查看配置文件看引用的文件，找到listening 在nginx里面配置为sock方式

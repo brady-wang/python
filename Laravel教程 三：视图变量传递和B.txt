@@ -1,0 +1,186 @@
+Laravel教程 三：视图变量传递和Blade
+Laravel教程 三：视图变量传递和Blade
+此文章为原创文章,未经同意,禁止转载。
+
+Blade
+
+
+上一篇我们简单地说了Router，Views和Controllers的工作流程，这一次我就按照上一篇的计划，来说说下面几个内容：
+
+向视图中传递变量
+Blade模板的用法
+
+向视图中传递变量
+我们在开发web应用当中，通常都不是为了写静态页面而生的，我们需要跟数据打交道，那么这个时候，问题就来了，在一个MVC的框架中，怎么将数据传给视图呢？比如我们要在 ArticleController 的 index方法的视图输出一个 $title 的变量，在Laravel中，有下面几种常见的方法：
+使用with()方法
+ public function index()
+    {
+        $title = '文章标题1';
+        return view('articles.lists')->with('title',$title);
+    }
+
+这样的 with('title',$title) 中，第一个 'title' 就是key，第二个 $title 就是值，这样我们就可以在我们的 articles/lists.blade.php 中输出这个变量了：
+<body>
+<h1><?php echo $title; ?></h1>
+
+</body>
+
+刷新我们的 blog.dev ，就可以看到类似这样的页面了：
+
+而在blade引擎中，我们可以这样输出变量：
+<body>
+<h1>{{ $title }}</h1>
+
+</body>
+
+其实在blade引擎中， {{ $title }} 会被解析为类似 这样的输出 <?php echo $title; ?> ，不过这里的{{ }} 符号会将数据原样输出，比如你将 $title 写成这样：
+ public function index()
+    {
+        $title = '<span style="color: red">文章</span>标题1';
+        return view('articles.lists')->with('title',$title);
+    }
+
+这个时候你用 {{ $title }} 输出，会看到类似下面这样：
+
+如果你想将 $title 作为页面元素渲染输出，你需要这样写：
+<h1>{!! $title !!}</h1>
+
+
+这里的 {{ }} 和 {!! !!} 是blade的最基础的用法，这两个我们会用得特别多，后面我会详细说说blade的用法。
+直接给view()传参数
+使用这个方法的时候，你可以这样写：
+public function index()
+    {
+        $title = '<span style="color: red">文章</span>标题1';
+        return view('articles.lists',['title'=>$title]);
+    }
+
+刷新页面，你依然会看到一样的输出。这里需要说明一下，如果你传多个变量，比如：
+ public function index()
+    {
+        $title = '<span style="color: red">文章</span>标题1';
+        $intro = '文章一的简介';
+        return view('articles.lists',[
+                                        'title'=>$title,
+                                        'introduction'=>$intro
+                                        ]);
+    }
+
+在传递的数组中：
+[
+'title'=>$title,
+'introduction'=>$intro
+]
+
+每一个key会在视图中作为变量，而 value 就作为变量的值。所以在视图中我们需要这样输出：
+<body>
+<h1>{!! $title !!}</h1>
+<p>{{ $introduction }}</p>
+</body>
+
+这里应写成 {{ $introduction }} ，而不是 {{ $intro }} 。
+使用compact
+使用compact是这样写的：
+ public function index()
+    {
+        $title = '<span style="color: red">文章</span>标题1';
+        $intro = '文章一的简介';
+        return view('articles.lists',compact('title','intro'));
+    }
+
+compact() 的字符串可以就是变量的名字，多个变量名用逗号隔开。这个时候注意更改视图的变量输出。
+以上就是Laravel中常用的几种向视图传递变量的方法，选择一种你喜欢的方式并坚持这一种写法就可以了，我是使用第三种。
+Blade的基本用法
+上面的内容介绍了一点点blade的语法，这里我们再统一介绍blade，说说下面几个比较常用的：
+@yield()
+@extends()
+@if() and @unless()
+@foreach()
+
+@yield() 和 @extends() 通常会结合者使用，实现我们通常所说的layouts布局：就是在web开发的过程中，我们将一些公用的部分如 header ， footer 等直接放在一个视图文件中，然后在使用的使用直接继承(使用@extends) 就可以了，比如我们在 resources/views/ 文件夹之下创建一个 app.blade.php ：
+<!DOCTYPE html>
+<html class="no-js" lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1, user-scalable=no">
+    <title>Laravel 5 教程</title>
+    <link rel='stylesheet' href="/css/all.css" type='text/css' media='all'/>
+    <script type='text/javascript' src="/js/all.js"></script>
+</head>
+<body>
+<div id="wrapper">
+
+    @yield('content')
+
+    <nav class="nav-container group" id="nav-footer">
+        <div class="nav-wrap">
+            <ul class="nav container group">
+                <li class="menu-item">
+                    <a href="/" rel="nofollow" target="_blank">Laravel 5 Blog</a>
+                </li>
+            </ul>
+        </div>
+    </nav>
+</div>
+</body>
+</html>
+
+写上这么一些内容，其中css这个 href="/css/all.css" ，需要我们手动在 public/ 文件夹之下创建css/文件夹，并创建all.css这个文件，对于js的src="/js/all.js"也是同理，这两个文件是为了后面的页面美化而做的提前准备。
+注意到@yield('content')这个语法，这里就是说，这里有一个content的内容区域，如果某个页面继承了这个app.blade.php，然后那个页面就可以动态改变@yield('content')的内容了。比如我们在articles/lists.blade.php中，我们继承一下app.blade.php:
+@extends('app')
+@section('content')
+<h1>{!! $title !!}</h1>
+<p>{{ $intro }}</p>
+@endsection
+
+这里的第一行@extends('app')就是声明这个页面继承于app.blade.php，也就是我们的articles/lists.blade.php可以使用到all.css和all.js文件，然后@section('content')就是对于app.blade.php的@yield('content')，表明就是：在渲染加载articles/lists.blade.php的时候，@yield('content')这部分内容会被替换为下面的内容：
+
+<h1>{!! $title !!}</h1>
+<p>{{ $intro }}</p>
+
+
+@if()通常是用于在视图中根据某些条件来判断是否该显示某些内容，比如我们可以很“无聊”地试试这样：
+public function index()
+    {
+        $first = 'jelly';
+        $last = 'bool';
+        return view('articles.lists',compact('first','last'));
+    }
+
+在views文件中，我们使用一下@if():
+@extends('app')
+@section('content')
+ @if($first == 'jellybool')
+ <h1>{{ $first }}</h1>
+ @else
+ <h1>{{ $last  }}</h1>
+@endif
+@endsection
+
+刷新一下就可以看到页面的输出，为$last的值。
+
+上面的@if()，还有一个可以使用的标签就是@unless()，@unless()就可以理解为 if( ! )，就是if not 这样理解就OK。
+@foreach()用于循环输出变量，比如：
+public function index()
+    {
+        $first = ['jelly','bool'];
+        return view('articles.lists',compact('first'));
+    }
+
+我们传一个数组给视图，然后，我们就可以使用@foreach()循环输出了：
+@extends('app')
+@section('content')
+@foreach( $first as $name)
+    <h1> {{ $name }}</h1>
+@endforeach
+@endsection
+
+刷新一下页面，就可以看到循环的结果了：
+
+blade的更多知识，可以参考文档：
+http://laravel.com/docs/5.1/blade
+下一节
+貌似上面配置数据库链接之后还没有用到，不用着急，我接下来的一篇会具体说说Eloquent的用法，这个在Laravel中是很有代表性的部分，希望你可以学到一点东西。
+Happy Hacking
+

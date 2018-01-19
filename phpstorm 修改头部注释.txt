@@ -1,0 +1,8 @@
+phpstorm 修改头部注释
+点击“setting”->"File  Templates"  ->"PHP File Header"
+如下图，
+ 
+ 
+ 
+ 
+

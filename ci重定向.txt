@@ -1,0 +1,24 @@
+ci重定向
+ci重定向   
+
+对于/index.php/abc这种url，Apache和lighttpd会按"index.php?abc"来解释，而nginx会认为是请求名字是“index.php”的目录下的abc文件的内容。所以CI在nginx下不配置rewrite是无法运行的，而在Apache和lighttpd则正常。
+
+nginx里rewrite ^/(.*)$ /index.php?$1 last;来rewrite请求时，对于：/abc.abc这类请求，会rewrite成“index.php/abc_abc”,即会把“点”变成“下划线”，不清楚是为了什么。
+
+nginx配置文件里的rewrite规则不是只执行一次就完事的，是“执行一遍，假如没有碰到break，就按rewrite后的新路径再执行一遍，直到不再变化或者遇到break或者执行满10次报500错误退出”，所以单纯的用小知识二里的重写规则是不行的，需要在后面加上一句break，这样重写一遍后就不再执行了。
+
+所以  进入nginx的配置文件
+
+加上一句（本来就有这句，只需要修改一下就行了）
+
+location /
+                        {
+                                index index.php;
+                                if (!-e $request_filename) {
+                                        rewrite ^/(.*)$ /index.php?$1 last;
+                                        break;
+                                }
+                        }
+ 
+
+再打开页面看看，是不是好了？

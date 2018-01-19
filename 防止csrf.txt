@@ -1,0 +1,21 @@
+防止csrf
+
+//防csrf攻击
+        $csrf_hash = md5(uniqid(rand(), TRUE));
+        set_cookie("my_csrf_name", $csrf_hash, 0, get_public_domain());
+        $this->data['csrf_hash'] = $csrf_hash;
+
+
+
+  //防csrf
+        if(isset($requestData['my_csrf_token'])) {
+            $cookie_csrf_hash = get_cookie("my_csrf_name");
+            $form_csrf_hash = $requestData['my_csrf_token'];
+            if($cookie_csrf_hash !== $form_csrf_hash) {
+                echo json_encode(array('success' => 0, 'msg' => lang('try_again')));
+                exit;
+            }
+        }
+
+
+　　

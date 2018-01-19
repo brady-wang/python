@@ -1,0 +1,9 @@
+无限分类
+id    name    	pid      path     路径-id
+1      男人世界  0         0       0-12      游戏世界  1         0-1     0-1-23      女人世界  0         0       0-34      包包世界  3         0-3     0-3-45      lv	 4         0-3-4   0-3-4-56      lol       2         0-1-2   0-1-2-6 
+当前路径path如果是顶级分类则pid path为0否则的话 为父级分类的path-pid排序可以按照 path-id 就可以了 $cates = D("Category")->order("concat(path,'-',cate_id)")->select();
+//找到上级的名称 foreach ($cates as &$v) {            $pid = $v['pid'];            $pname_arr = M("Category")->where("cate_id=".$pid)->field('cate_name')-
+>find();            $v['pname'] = $pname_arr['cate_name'];        }
+根据分级整出层次感 没一层加两个|--foreach($cates as &$cate){                $prefix = "";                $c = count(explode("-",$cate['path']));                for($i=0;$i<$c*2;$i++){                    $prefix .= "｜－－";                }                $cate['pname'] = $prefix.$cate['cate_name'];            }
+关联模型不会 还是join吧  
+ 

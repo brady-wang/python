@@ -1,0 +1,10 @@
+mysql修改编码
+在[mysqld]下的 port的下一行写入character-set-server=utf8  也可以设置成其他类型的字符编码，把utf8换成gbk等
+ 
+一、编辑MySql的配置文件MySql的配置文件Windows下一般在系统目录下或者在MySql的安装目录下名字叫my.ini，可以搜索，Linux下一般是 /etc/my.cnf
+--在 [mysqld] 标签下加上三行default-character-set = utf8character_set_server = utf8lower_case_table_names = 1 //表名不区分大小写（此与编码无关）
+--在 [mysql] 标签下加上一行default-character-set = utf8
+--在 [mysql.server]标签下加上一行default-character-set = utf8
+--在 [mysqld_safe]标签下加上一行default-character-set = utf8
+--在 [client]标签下加上一行default-character-set = utf8
+ 

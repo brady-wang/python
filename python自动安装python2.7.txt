@@ -1,0 +1,53 @@
+python自动安装python2.7
+
+#coding = utf-8
+import os
+import sys
+if(os.getuid() == 0):
+	pass
+else:
+	print ("you are not root user")
+	sys.exit(1)
+
+#version = input("please input python version	(2.7/3.6)")
+version = 2.7
+if version == 2.7:
+	packagename = "Python-2.7.13"
+else:
+	packagename = "Python-3.6.2"
+os.system("rm -rf "+ packagename+"*")
+
+if(version == 2.7):
+	url = "https://www.python.org/ftp/python/2.7.13/Python-2.7.13.tgz"
+elif version == 3.6:
+	url = "https://www.python.org/ftp/python/3.6.2/Python-3.6.2.tgz"
+else:
+	print("input error")
+	sys.exit(1)
+
+cmd = "wget " + url
+res = os.system(cmd)
+
+if res != 0:
+	print("download failed check network")
+
+cmd = "tar xvf " + packagename +".tgz"
+
+res = os.system(cmd)
+
+if res != 0 :
+	print("tar failed")
+	os.system("rm " + packagename + ".tgz")
+	sys.exit(1)
+
+cmd = "cd Python-2.7.13 && ./configure --prefix=/usr/local/python2.7 && make && make install"
+res = os.system(cmd)
+
+if res != 0 :
+	os.system("rm -rf "+ packagename)
+	os.system("rm " + packagename + ".tgz")
+	print("make failed")
+	sys.exit(1)
+
+
+　　

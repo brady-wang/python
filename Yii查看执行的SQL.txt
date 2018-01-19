@@ -1,0 +1,4 @@
+Yii查看执行的SQL
+开户debug
+修改配置文件 ：protected/config/main.php,
+'log' => array(            'class' => 'CLogRouter',            'routes' => array(                array(                    'class' => 'CFileLogRoute',                    'levels' => 'trace, info, error, warning',                ),                // uncomment the following to show log messages on web pages                array(                    'class' => 'CWebLogRoute',                    'levels' => 'trace', //级别为trace                    'categories' => 'system.db.*' //只显示关于数据库信息,包括数据库连接,数据库执行语句                ),            ),        ),

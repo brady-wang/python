@@ -1,0 +1,22 @@
+点击图片实现文件上传
+  <!DOCTYPE html>
+<html>
+<head>
+    <meta charset="utf-8">
+    <title>Demo</title>
+    <script type="text/javascript">
+        function F_Open_dialog() 
+       { 
+            document.getElementById("btn_file").click(); 
+       } 
+
+    </script>
+</head>
+<body>
+    <div>
+        <input type="file" id="btn_file" style="display:none">
+        <img src="http://7u2nae.com1.z0.glb.clouddn.com/2.jpg" onclick="F_Open_dialog()">
+    </div>
+
+</body>
+</html>

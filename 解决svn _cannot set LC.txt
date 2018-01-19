@@ -1,0 +1,7 @@
+解决svn "cannot set LC_CTYPE locale"的问题
+解决svn "cannot set LC_CTYPE locale"的问题
+    在ubuntu 8.10下安装的svn，在将Ubuntu的语言修改为英文之后，出现错误警告：
+$ svnsvn: warning: cannot set LC_CTYPE localesvn: warning: environment variable LANG is en_US.UTF-8svn: warning: please check that your locale name is correctType 'svn help' for usage.
+
+        解决方法很简单，修改/etc/profile：
+sudo vi /etc/profile加入一行：export LC_ALL=Csource /etc/profile

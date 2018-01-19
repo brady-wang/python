@@ -1,0 +1,3 @@
+createobjbyreplace(str,arr)  js替换方法保存
+ <script>        function createobjbyreplace(str,arr){          var len = arr.length;          for(var i=0; i<len; i++){            str = str.replace(arr[i][0],arr[i][1]);            console.log(arr[i])          }          return str;        }        var s = "<span class='relative tag-btn'><i class='circle-close delete-level'data-tid='[rid]'data-qid='[qid]'>X</i><button class='btn btn-gray'>[n]</button></span>";
+        var a = createobjbyreplace(s,[["[rid]","ddd"],["[qid]","dfdg"],["[n]","dfgdf"]])        console.log(a)    </script>

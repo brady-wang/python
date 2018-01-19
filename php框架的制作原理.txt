@@ -1,0 +1,38 @@
+php框架的制作原理
+
+php框架的制作原理
+ (2012-08-16 14:25:55)
+转载▼
+
+
+
+
+
+标签： 
+php框架制作
+ 
+杂谈
+
+分类： php
+
+
+
+
+
+index.php 主入口文件
+<?php  define('ISEXIST',true);  require "init.php";  $control = new Controller();  $control -> Run();?>
+---------------------------------------------------------------------------------------------
+init.php 文件
+<?php  if(!defined('ISEXIST'))   exit("请从入口文件运行程序");  header("Content-Type:text/html;charset=utf-8");    if(!defined('ROOT_PATH'))   //这里动态的声明,'\\'是转义反斜线,默认'\'为转义字符   define('ROOT_PATH',str_replace('\\','/',dirname(__FILE__)));   require ROOT_PATH.'/a/config.php';  require ROOT_PATH.'/a/controller.class.php';  require ROOT_PATH.'/a/view.class.php';  require ROOT_PATH.'/a/model.class.php';  ?>
+----------------------------------------------------------------------------------------------
+config.php 文件
+<?php  if(!defined('ISEXIST'))   exit("请从入口文件运行程序");  $C = array(  'URL_MODE'=>1,//url模式,1为普通模式,2为path_info模式  'DEFAULT'=>'welcome',//默认的控制器  'DEFAULT_ACTION'=>'index'//默认的方法  );?>
+-----------------------------------------------------------------------------------------------
+controller.class.php 文件
+ 
+<?phpclass Controller{ public function Run()  {  $this->Analysis();  //开始解析URL获得请求的控制器和方法  $control = $_GET['con'];  $action = $_GET['act'];  $action = ucfirst($action);  //这里构造出控制器文件的路径  $controlFile = ROOT_PATH . '/Controllers/' . $control . '.class.php';  if(!file_exists($controlFile)) //如果文件不存在提示错误, 否则引入  {   exit("{$control}.class.php控制器不存在<br>". "请检查: ".$controlFile."是否存在<br>");  }  include($controlFile);  $class = ucfirst($control); //将控制器名称中的每个单词首字母大写,来当作控制器的类名  if(!class_exists($class)) //判断类是否存在, 如果不存在提示错误 { exit("{$control}.class.php中未定义的控制器类" . $class); } $instance = new $class(); //否则创建实例 if(!method_exists($instance, $action)) //判断实例$instance中是否存在$action方法, 不存在则提示错误 { exit("$class类中不存在方法:". $action); } $instance->$action(); }    protected function Analysis() { //$GLOBALS['C']['URL_MODE']; global $C; //包含全局配置数组, 这个数组是在Config.ph文件中定义的,global声明$C是调用外部的 if($C['URL_MODE'] == 1) //如果URL模式为1 那么就在GET中获取控制器, 也就是说url地址是这种的 [url=http://localhost/index.php?c]http://localhost /index.php?c[/url]=控制器&a=方法 { $control = !empty($_GET['con']) ? trim($_GET['con']) : ''; $action = !empty($_GET['act']) ? trim($_GET['act']) : ''; } else if($C['URL_MODE'] == 2) //如果为2 那么就是使用PATH_INFO模式, 也就是url地址是这样的    [url=http://localhost/index.php/]http://localhost/index.php/[/url]控制器/方法 /其他参数 { if(isset($_SERVER['PATH_INFO'])) { //$_SERVER['PATH_INFO']URL地址中文件名后的路径信息, 不好理解, 来看看例子 //比如你现在的URL是 [url=http://www.php100.com/index.php]http://www.php100.com/index.php[/url] 那么你的$_SERVER['PATH_INFO']就是空的 //但是如果URL是 [url=http://www.php100.com/index.php/abc/123]http://www.php100.com/index.php/abc/123[/url] //现在的$_SERVER['PATH_INFO']的值将会是 index.php文件名称后的内容 /abc/123/ $path = trim($_SERVER['PATH_INFO'], '/'); $paths = explode('/', $path); $control = array_shift($paths); $action = array_shift($paths); } } //这里判断控制器的值是否为空, 如果是空的使用默认的 $_GET['con'] = !empty($control) ? $control : $C['DEFAULT']; //和上面一样 $_GET['act'] = !empty($action) ? $action : $C['DEFAULT_ACTION']; }}?>
+--------------------------------------------------------------------------------------------------
+welcome.class.php 文件
+ 
+<?php  class Welcome  {   function Index()   {    echo '欢迎使用此CMS系统';   }   function Run()   {    echo 'Hello';   }      function Show()   {    echo '方法名show';   }  }?>
+

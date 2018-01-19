@@ -1,0 +1,20 @@
+VirtualBox Host-only Adapter，Failed to create the host-only adapter 转
+不用重装VirtualBox,安装虚拟网卡
+今天使用VirtualBox的host-only模式，因为之前把网络连接卸载,这次出现的各种错误。
+Failed to create the host-only adapter
+Could not find Host Interface Networking driver! Please reinstall
+How to reinstall the host-only network adapter in VirtualBox 
+
+1
+2
+3
+4
+
+Failed to create the host-only adapter
+修改vagrant 配置文件 config.vm.network “private_network”, ip: “192.168.33.10” 启用host-only模式 出现没有找到 host-only适配器
+Could not find Host Interface Networking driver! Please reinstall
+在virtualbox 管理 - > 全局设定 -> 网络 - > tab 仅主机网络 - > 添加
+正常情况下是可以添加成功的，但是有可能报 Could not find Host Interface Networking driver！Please reinstall
+How to reinstall the host-only network adapter in VirtualBox
+如果第二步报错,这是因为之前卸载虚拟网卡的时候把驱动也给删除了。 可以在安装virtualbox目录../Oracle VM VirtualBox中的 drivers\ network\ netadp6目录下有三个文件 VBoxNetAdp6.cat VBoxNetAdp6.inf VBoxNetAdp6.sys 这就是virtualbox虚拟网卡的驱动，右击VBoxNetAdp6.inf，点安装即可。 然后再做第二步。应该可以完成了。
+参考网址：https://www.virtualbox.org/ticket/14437

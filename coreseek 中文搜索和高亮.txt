@@ -1,0 +1,161 @@
+coreseek 中文搜索和高亮
+配置文件
+
+#
+# Minimal Sphinx configuration sample (clean, simple, functional)
+#
+
+source post
+{
+    type                    = mysql
+
+    sql_host                = 192.168.33.90
+    sql_user                = root
+    sql_pass                = root
+    sql_db                    = test
+    sql_port                = 3306    # optional, default is 3306
+    sql_sock                                = /tmp/mysql.sock 
+    sql_query_pre = SET NAMES utf8
+    sql_query_pre = SET SESSION query_cache_type=OFF
+    sql_query                = \
+        SELECT * from post
+
+    sql_query_info            = SELECT * FROM post WHERE id=$id
+}
+
+
+index post
+{
+    source                    = post
+    path                    = /usr/local/coreseek/var/data/post
+    
+    charset_type            = zh_cn.utf-8
+    charset_dictpath                = /usr/local/mmseg/etc/
+}
+
+
+indexer
+{
+    mem_limit                = 32M
+}
+
+
+searchd
+{
+    port                    = 9312
+    log                        = /usr/local/coreseek/var/log/searchd.log
+    query_log                = /usr/local/coreseek/var/log/query.log
+    read_timeout            = 5
+    max_children            = 30
+    pid_file                = /usr/local/coreseek/var/log/searchd.pid
+    max_matches                = 1000
+    seamless_rotate            = 1
+    preopen_indexes            = 0
+    unlink_old                = 1
+}
+
+ 
+数据库数据
+
+/*
+Navicat MySQL Data Transfer
+
+Source Server         : 33.90
+Source Server Version : 50548
+Source Host           : 192.168.33.90:3306
+Source Database       : test
+
+Target Server Type    : MYSQL
+Target Server Version : 50548
+File Encoding         : 65001
+
+Date: 2016-11-25 22:52:55
+*/
+
+SET FOREIGN_KEY_CHECKS=0;
+
+-- ----------------------------
+-- Table structure for `post`
+-- ----------------------------
+DROP TABLE IF EXISTS `post`;
+CREATE TABLE `post` (
+  `id` int(11) NOT NULL AUTO_INCREMENT,
+  `title` varchar(100) DEFAULT NULL,
+  `content` text,
+  PRIMARY KEY (`id`)
+) ENGINE=MyISAM AUTO_INCREMENT=11 DEFAULT CHARSET=utf8;
+
+-- ----------------------------
+-- Records of post
+-- ----------------------------
+INSERT INTO `post` VALUES ('1', 'linux1', 'linux11');
+INSERT INTO `post` VALUES ('2', 'php1', 'php11');
+INSERT INTO `post` VALUES ('3', 'php1', 'php222');
+INSERT INTO `post` VALUES ('4', 'php3', 'php333');
+INSERT INTO `post` VALUES ('5', 'php5', 'php333');
+INSERT INTO `post` VALUES ('8', '兄弟连', '格兰仕的减肥了开始的减肥了时间发');
+INSERT INTO `post` VALUES ('7', 'linux is very good', ' linux is aaaaaaa连');
+INSERT INTO `post` VALUES ('9', '时间', '收到减肥老兄弟');
+INSERT INTO `post` VALUES ('10', '二位二位二时间', 'lamp兄弟连');
+
+php代码
+
+<?php
+header("Content-type:text/html;charset=utf-8");
+ini_set("display_errors",1);
+error_reporting(E_ALL);
+$keyword = $_GET['key'];
+//实例化Sphinx对象
+$sphinx=new SphinxClient();
+
+//连接sphinx服务器
+$sphinx->SetServer("192.168.33.90",9312);
+//拆词
+//SPH_MATCH_ALL 和 SPH_MATCH_ANY 的区别：
+//搜索“LAMP兄弟连”，ALL的结果：完整包含“LAMP兄弟连”才能被搜出来，
+//单纯包含“LAMP”或单纯包含“兄弟连”的搜索不出来，没有拆词的功能。
+//ANY则可以搜索出来拆开后的词的结果。此处使用ANY
+$sphinx->SetMatchMode(SPH_MATCH_ANY);
+//通过query方法搜索,“*”表示在所有的索引中搜索，相当于命令行里面的“./indexer --all”
+$result=$sphinx->query("$keyword","*");
+//打印搜索的结果
+// echo "<pre>";
+// print_r($result);
+// echo "</pre>";
+
+//上面打印的结果中，数组的 [matches]循环便利，下标就是搜索到的文档的主键Id
+//使用PHP中的 array_keys()函数即可拿到下标，即：要查找的文档的主键
+//print_r(array_keys($result['matches']));
+//结果如下：Array([0]=>1)
+
+//使用implode或者 join用逗号把查询出来的主键连接起来：
+$ids = join(',',array_keys($result['matches']));
+//echo $ids; //6,7
+
+/*连接数据库的操作*/
+$p1 = mysql_connect("192.168.33.90","root","root");
+mysql_select_db("test");
+mysql_query("set names utf8");
+$sql="select * from post where id in ($ids)";
+$rst=mysql_query($sql);
+
+$opts=array(
+   "before_match"=>"<font color='red'>",
+   "after_match"=>"</font>",
+);
+while($row=mysql_fetch_assoc($rst)){
+
+    //下面是高亮显示所需，具体可以查手册    
+    $final=$sphinx->buildExcerpts($row,"post",$keyword,$opts);
+    
+    echo "标题：".$final['1']."<br>";
+    echo $final[2].'<hr>';
+}
+
+?>
+
+ 
+效果图片：
+ 
+
+ 

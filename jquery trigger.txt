@@ -1,0 +1,22 @@
+jquery trigger
+
+ <button id="bt1" class="layui-btn layui-btn-normal">
+        点击提交
+    </button>
+
+    <script>
+        $(function(){
+            $(document).keydown(function(event){
+                if(event.keyCode == 13){
+                    $("#bt1").trigger('click');
+                }
+            })
+
+            $("#bt1").click(function(){
+                layer.msg(444444);
+            })
+        })
+    </script>
+
+
+　　
