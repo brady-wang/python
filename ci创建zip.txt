@@ -1,2 +1,0 @@
-ci创建zip
-public function createZip()		{			$this->load->library("zip");			$name = "test.text";			$data = "ddddd";			$this->zip->add_data($name,$data);			$this->zip->archive("c:www/ci3.0/test.zip");		}

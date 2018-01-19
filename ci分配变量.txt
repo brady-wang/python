@@ -1,2 +1,0 @@
-ci分配变量
-　　$this->load->vars('ddd',$dd);
