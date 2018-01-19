@@ -1,0 +1,10 @@
+ecshop后台"云提醒未激活 点击激活" 补丁删除方法
+ecshop后台"云提醒未激活 点击激活" 补丁删除方法
+ECSHOP教程 / ecshop 教程网(www.ecshop119.com) 2015-01-15
+ 
+
+
+ecshop后台提示＂云提醒未激活 点击激活＂删除方法，下面由ECSHOP教程网（www.ecshop119.com）教程为大家解答一下吧！
+首先打开ECSHOP系统文件：admin/templates/start.htm文件，把关于云提醒的代码删除或者注释掉、删除即可，代码如下： <ul id="cloud_list" style="padding:0; margin: 0; list-style-type:none; color: #CC0000;"></ul> <script type="Text/Javascript" language="JavaScript"><!--  Ajax.call('cloud.php?is_ajax=1&act=cloud_remind','', cloud_api, 'GET', 'JSON');    function cloud_api(result)    {       //alert(result.content);      if(result.content=='0')       {        document.getElementById("cloud_list").style.display ='none';       }      else        {          document.getElementById("cloud_list").innerHTML =result.content;       }     }    function cloud_close(id)     {       Ajax.call('cloud.php?is_ajax=1&act=close_remind&remind_id='+id,'', cloud_api, 'GET', 'JSON');    }    //--> </script>这样即可去掉ecshop激活的提示信息在下来删除ecshop后台云服务中心菜单：打开admin/templates/menu.htm 找到这行 document.getElementById("menu-ul").innerHTML = document.getElementById("menu-ul").innerHTML+ result.content;修改成为：document.getElementById("menu-ul").innerHTML = document.getElementById("menu-ul").innerHTML;
+
+

@@ -1,0 +1,30 @@
+CentOS yum 安装LAMP PHP5.4版本
+
+CentOS yum 安装LAMP PHP5.4版本
+
+
+
+
+ 
+ 
+[字体：大 中 小]
+
+
+
+ 
+
+ 
+Linux系统版本：CentOS 6.5
+1.yum安装和源代码编译在使用的时候没啥区别，但是安装的过程就大相径庭了，yum只需要3个命令就可以完成，源代码需要13个包，还得加压编译，步骤很麻烦，而且当做有时候会出错，源代码编译安装大概需要2个小时，好处在于可以自己配置地址等一些参数，yum安装半个小时搞定，一般不会出错，更新也很方便。
+2.我的机器是CentOS release 5.9 64为的系统，一般机器都带yum命令，并且yum包源都是可以用的，就是说不用你自己下载东西，直接yum -y install 后面加上你所需要安装的软件，他会自动下载自动安装，非常方便。例如 yum -y install httpd自动下载并安装apache服务器。lamp环境只需要安装httpd,mysql,php
+3.首先更新一下yum -y update
+4.用yum安装Apache,Mysql,PHP.
+4.1安装Apache yum install httpd httpd-devel 安装完成后，用/etc/init.d/httpd start 启动apache 设为开机启动:chkconfig httpd on
+4.2 安装mysql yum install mysql mysql-server mysql-devel 同样，完成后，用/etc/init.d/mysqld start 启动mysql
+4.3 设置mysql密码 mysql>; USE mysql; mysql>; UPDATE user SET Password=PASSWORD('newpassword') WHERE user='root'; mysql>; FLUSH PRIVILEGES;
+设置mysql密码还可以用：mysql_secure_installation 命令
+4.4允许远程登录 mysql -u root -p Enter Password: <your new password> mysql>GRANT ALL PRIVILEGES ON *.* TO '用户名'@'%' IDENTIFIED BY '密码' WITH GRANT OPTION; 完成后就能用mysql-front远程管理mysql了。 设为开机启动 chkconfig mysqld on
+5 PHP5.4安装
+rpm -Uvh http://mirror.webtatic.com/yum/el6/latest.rpm  （下载最新的源）yum install php54w  php54w-bcmath php54w-cli php54w-common  php54w-devel php54w-fpm    php54w-gd php54w-imap  php54w-ldap php54w-mbstring php54w-mcrypt php54w-mysql  php54w-odbc  php54w-pdo  php54w-pear  php54w-pecl-igbinary  php54w-xml php54w-xmlrpc php54w-opcache php54w-intl php54w-pecl-memcache安装PHP对应的各种扩展；
+使用yum安装就是各种方便，用源码安装试了十几次，各种bug无法解决！！！！
+

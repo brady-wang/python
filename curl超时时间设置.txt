@@ -1,0 +1,21 @@
+curl超时时间设置
+本文实例讲述了php中curl超时设置方法。分享给大家供大家参考。具体实现方法如下：
+访问HTTP方式很多，可以使用curl, socket, file_get_contents() 等方法。  在访问http时，需要考虑超时的问题。
+CURL访问HTTP：
+CURL 是常用的访问HTTP协议接口的lib库，性能高，还有一些并发支持的功能等。  curl_setopt($ch, opt) 可以设置一些超时的设置，主要包括：    ① (重要) CURLOPT_TIMEOUT 设置cURL允许执行的最长秒数。      ② (重要) CURLOPT_TIMEOUT_MS 设置cURL允许执行的最长毫秒数。    （在cURL 7.16.2中被加入。从PHP 5.2.3起可使用） ③  CURLOPT_CONNECTTIMEOUT 在发起连接前等待的时间，如果设置为0，则无限等待。 ④ CURLOPT_CONNECTTIMEOUT_MS 尝试连接等待的时间，以毫秒为单位。如果设置为0，则无限等待。  （在cURL 7.16.2中被加入。从PHP 5.2.3开始可用）  ⑤ CURLOPT_DNS_CACHE_TIMEOUT 设置在内存中保存DNS信息的时间，默认为120秒。  1. curl普通秒级超时： 
+复制代码 代码如下:
+ $ch = curl_init();        curl_setopt($ch, CURLOPT_URL,$url);         curl_setopt($ch, CURLOPT_RETURNTRANSFER,1);         curl_setopt($ch, CURLOPT_TIMEOUT,60);   //只需要设置一个秒的数量就可以    curl_setopt($ch, CURLOPT_HTTPHEADER, $headers);         curl_setopt($ch, CURLOPT_USERAGENT, $defined_vars['HTTP_USER_AGENT']); 
+ 
+2. curl普通秒级超时使用： 
+复制代码 代码如下:
+ curl_setopt($ch, CURLOPT_TIMEOUT,60);
+
+ 
+ 
+3. curl如果需要进行毫秒超时，需要增加： 
+复制代码 代码如下:
+curl_easy_setopt(curl, CURLOPT_NOSIGNAL,1L);        //或者        curl_setopt ( $ch,  CURLOPT_NOSIGNAL,true);//支持毫秒级别超时设置
+
+ 希望本文所述对大家的PHP程序设计有所帮助。
+ 
+function curl_post3($url, $postData) {   $postData = json_encode($postData);   $curl = curl_init();  //初始化   curl_setopt($curl,CURLOPT_URL,$url);  //设置url   curl_setopt($curl,CURLOPT_HTTPAUTH,CURLAUTH_BASIC);  //设置http验证方法   curl_setopt($curl, CURLOPT_TIMEOUT,3);   //只需要设置一个秒的数量就可以   curl_setopt($curl,CURLOPT_RETURNTRANSFER,1);  //设置curl_exec获取的信息的返回方式   curl_setopt($curl,CURLOPT_POST,1);  //设置发送方式为post请求   curl_setopt($curl,CURLOPT_POSTFIELDS,$postData);  //设置post的数据   curl_setopt($curl, CURLOPT_HTTPHEADER, array(         'Content-Type: application/json',         'Content-Length: ' . strlen($postData))   );   $result = curl_exec($curl);   curl_close($curl);   return json_decode($result,true);}

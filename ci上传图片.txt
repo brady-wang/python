@@ -1,0 +1,79 @@
+ci上传图片
+
+<html>
+<head>
+    <title>Upload Form</title>
+</head>
+<body>
+
+<?php echo $error;?>
+
+
+    <form action="http://1382681670.tps138.brady1125/ucenter/test/do_upload" method="post" enctype="multipart/form-data">
+
+    <input type="file" name="test" size="20"/>
+    <input type="submit" value="upload" />
+</form>
+
+<br /><br />
+
+
+
+</form>
+
+</body>
+</html>
+
+
+<?php
+
+/**
+ * Created by PhpStorm.
+ * User: brady
+ * Desc:
+ * Date: 2017/7/15
+ * Time: 13:53
+ */
+class test  extends MY_Controller
+{
+    public function __construct()
+    {
+        parent::__construct();
+        $this->load->helper(array('form', 'url'));
+    }
+
+    public function index()
+    {
+        $this->_viewData['title'] = "test";
+        $this->_viewData['error'] = "";
+        echo APPPATH;
+        parent::index();
+    }
+
+    public function do_upload()
+    {
+        header("content-type:text/html;charset=utf-8");
+        $config['upload_path']      = './upload/recommend';
+        // 允许上传哪些类型
+        $config['allowed_types'] = 'gif|png|jpg|jpeg';
+        // 上传后的文件名，用uniqid()保证文件名唯一
+        echo $config['file_name'] = uniqid();
+        dump($_FILES);
+        // 加载上传库
+        $this->load->library('upload', $config);
+        dump($this->upload->data());
+        // 上传文件，这里的pic是视图中file控件的name属性
+        $result = $this->upload->do_upload('test');
+        $a = $this->upload->display_errors('<p>', '</p>');
+        var_dump($a);
+        // 如果上传成功，获取上传文件的信息
+        if ($result)
+        {
+            var_dump($this->upload->data());
+        }
+    }
+
+}
+
+
+　　

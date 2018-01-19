@@ -1,0 +1,11 @@
+ci控制器写规范
+　　不需要后缀名 
+　　文件名全部小写 
+　　所有控制器需要直接或者间接继承CI_Controller 
+ 　　以下划线开头的方法为私有方法，不能被请求 
+protected private的方法不能被浏览器请求
+ 
+ci方法名不区分大小写 
+ 
+修改默认控制器  config->routes.php改为
+$route['default_controller'] = 'index';

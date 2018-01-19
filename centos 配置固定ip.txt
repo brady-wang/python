@@ -1,0 +1,49 @@
+centos 配置固定ip
+
+centos下网络配置方法(网关、dns、ip地址配置)
+
+
+来源：互联网 作者：佚名 时间：07-13 00:32:07 【大 中 小】
+
+
+本文介绍了centos网络配置的方法，centos网络配置主要包括dns、网关、IP地址，主要是配置resolv.conf\network\ifcfg-eth0这些网络配置文件,需要的朋友可以参考下
+ 
+centos网络配置实例
+1，配置DNSvi /etc/resolv.conf加入: 
+ 
+
+复制代码
+
+代码如下:
+nameserver 192.168.0.1 nameserver 
+8.8.8.8nameserver 8.8.4.4
+ 
+2，配置网关：
+vi /etc/sysconfig/network加入：GATEWAY=192.168.0.1完整的如下：  
+ 
+
+复制代码
+
+代码如下:
+NETWORKING=yesHOSTNAME=localhost.localdomainGATEWAY=192.168.0.1
+ 
+3，配置ip地址： vi 
+/etc/sysconfig/network-scripts/ifcfg-eth0内容如下： 
+
+复制代码
+
+代码如下:
+DEVICE="eth0"HWADDR="00:0C:29:6C:BB:E6"NM_CONTROLLED="yes"ONBOOT="no"NETMASK=255.255.255.0IPADDR=192.168.0.8GATEWAY=192.168.0.1BOOTPROTO=staticONBOOT=yesPEERDNS=yes
+ 4，重新启动服务：
+ 
+ 
+
+复制代码
+
+代码如下:
+/etc/init.d/network 
+restart或使用命令：service network restart或：ifdown eth0 and ifup 
+eth0
+ 
+配置完成后，ping一下网关，检查是否能ping通或在用ifconfig eth0，检查下实际配置的ip地址。
+

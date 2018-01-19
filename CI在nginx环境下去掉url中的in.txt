@@ -1,0 +1,22 @@
+CI在nginx环境下去掉url中的index.php
+在nginx环境下CI框架默认URL规则访问不了，出现500错误，如：
+http://blog.php230.com/index.php/keywords
+今天在服务器配置CI框架环境时，去除URL中的index.php，出现了默认URL规则访问不了的情况，只能通过参数方式访问：
+http://blog.php230.com/index.php?c=keywords
+配置：
+location /{
+	if (-f $request_filename) {
+		expires max;
+		break;
+	}
+	if (!-e $request_filename) {
+		rewrite ^/(.*)$ /index.php/$1 last;
+		break;
+	}
+}
+自己在lnmp测试环境下使用正常，在正式服务器上就不能使用。
+解决方法：
+location /{
+	try_files $uri $uri/ /index.php?$uri&$args;
+}
+把重写规则改为上面就可以正常访问了。

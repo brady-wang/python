@@ -1,0 +1,20 @@
+configure: error: Please reinstall the libcurl distribution
+configure: error: Please reinstall the libcurl distribution -
+    easy.h should be in /include/curl/
+
+基本上确定是丢失了什么包所致，上网搜索得到需要事先安装的依赖包。
+
+
+
+
+
+# RetHat CentOS or Fedora 使用下面安装命令
+yum install curl curl-devel
+# Debian or Ubuntu使用下面的安装命令
+apt-get install curl
+apt-get install libcurl4-gnutls-dev
+
+
+
+
+
