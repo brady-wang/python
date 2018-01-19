@@ -1,0 +1,10 @@
+python - easy_install的安装和使用
+python - easy_install的安装和使用
+ 
+
+
+为什么要装easy_install?正常情况下，我们要给Python安装第三方的扩展包，我们必须下载压缩包，解压缩到一个目录，然后命令行或者终端打开这个目录，然后执行python setup.py install来进行安装。这样是不是很繁琐呢？如果我们直接命令行执行easy_install Twisted就把最新版的Twisted包装上去了，是不是很爽呢？所以easy_install就是为了我们安装第三方扩展包更容易
+怎么装easy_install?首先下载easy_install的安装包，下载地址：http://pypi.python.org/pypi/setuptools下载自己对应的版本，windows上面直接运行exe安装就可以了linux上面可以直接运行sh setuptools-0.6c9-py2.4.egg安装完成后，easy_install会被自动复制到bin目录下，也就是我们的PATH路径下，所以我们在终端中可以直接运行easy_install命令了easy_install Twisted测试一下，看是否成功
+常见的问题当在安装包的时候，不管是手动安装 还是 easy_install，如果提示错误：找不到python.h文件，那说明我们安装的python不是开发版，在ubuntu下面的解决办法如下：sudo apt-get install python-2.7-dev安装对应python版本的dev就可以了。
+
+
