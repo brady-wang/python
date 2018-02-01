@@ -21,8 +21,8 @@ def request_method():
 
  resp = s.send(prepared,timeout=10)
  print(resp.status_code)
- print(resp.headers)
  print(resp.text)
+ print(resp.content)
 
 
 if __name__ == '__main__':
